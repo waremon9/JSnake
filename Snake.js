@@ -12,6 +12,11 @@ function startclicked(){
     (document.getElementById("start"));
   newGame();
   drawBoard();
+  setInterval(playGame,1000);
+}
+
+function playGame(){
+  if(!dead) step();
 }
 
 function newGame(){
@@ -23,7 +28,7 @@ function newGame(){
   }
   // Create a new canvas according to the size of the world
   let el = document.createElement("div");
-  let width = world[1].length*spaceSize;
+  let width = world[0].length*spaceSize;
   let height = world.length*spaceSize;
   let can =  "<canvas id='myCanvas' width='"+ width
     + "' height='"+ height +"'>";
@@ -31,7 +36,7 @@ function newGame(){
   document.getElementById("game").appendChild(el);
   //Reset snake
   Snake = [[0,0],[1,0],[2,0]];
-  direction = RIGHT;
+  direction = DOWN;
 }
 
 function step(){
@@ -55,6 +60,67 @@ function step(){
     default:
       break;
   }
+
+  //update Snake array
+  //First add the new position of the head
+  let oldHead = newHead = Snake[Snake.length-1].slice();
+
+  //old head become body
+  world[oldHead[1]][oldHead[0]]=SNAKE_BODY;
+
+  console.log("my Array");
+  Snake.forEach(x =>{
+    console.log(x);
+  })
+  switch(direction){
+    case UP:
+      newHead[1]--;
+      break;
+    case DOWN:
+      newHead[1]++;
+      break;
+    case RIGHT:
+      newHead[0]++;
+      break;
+    case LEFT:
+      newHead[0]--;
+      break;
+  }
+  Snake.push(newHead);
+  console.log("after push");
+  Snake.forEach(x =>{
+    console.log(x);
+  })
+
+  //offmap? (dead then)
+  if(world[0].length<=newHead[0] || newHead[0]<0 || world.length<=newHead[1] || newHead[1]<0) dead = true;
+
+  //Then check collision with items on map
+  if(!dead){
+    let newSpace = world[newHead[1]][newHead[0]];
+    //not a switch because we can't check all case at once since snake's butt's last
+    //space isn't empty yet and we need to keep it until we checked if food is eaten.
+    if(newSpace==FOOD){ //check for food first
+      score++;
+    }else{
+      //delete current butt and update world
+      var xy = Snake.shift();
+      world[xy[1]][xy[0]] = EMPTY;
+      console.log("after shift");
+      Snake.forEach(x =>{
+        console.log(x);
+      })
+    }
+    if(newSpace==WALL || newSpace==SNAKE_BODY){ //then check for wall or body part
+      dead=true;
+    }
+    //everithyng checked, add the head to the map
+    world[newHead[1]][newHead[0]]=SNAKE_HEAD;
+  }
+
+  //draw the new state
+  if(!dead) drawBoard();
+  else gameOver();
 }
 
 //Some usefull variable
@@ -65,6 +131,7 @@ var UP = 0;
 var RIGHT = 1;
 var DOWN = 2;
 var LEFT = 3;
+var dead = false;
 
 // Define the space state
 var EMPTY = 0;
@@ -102,6 +169,11 @@ var GREEN = "#00FF00";
 var DARK_GREEN = "#00AA00";
 var BROWN = "#582900";
 var LIGHT_GREY = "#AAAAAA";
+
+function gameOver(){
+  //game-over screen
+  console.log("perdu");
+}
 
 function drawBoard(){
   // Draw the whole game on the canvas
@@ -150,7 +222,7 @@ function drawBoard(){
   //draw the grid
   ctx.beginPath();
   ctx.strokeStyle = BLACK;
-  for(var i = 0; i<world[1].length+1; i++){
+  for(var i = 0; i<world[0].length+1; i++){
     ctx.moveTo(spaceSize*i,0);
     ctx.lineTo(spaceSize*i,canHeight);
   }
