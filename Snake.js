@@ -1,10 +1,13 @@
 function create_sub() {
+  // sub all buttons to event
     document.getElementById("start")
       .addEventListener('click', startclicked)
   }
+// wait for window to load
 window.addEventListener("load", create_sub);
 
 function startclicked(){
+  // Click on start button and make it disapear and start the game
   document.getElementById("menu").removeChild
     (document.getElementById("start"));
   newGame();
@@ -26,21 +29,58 @@ function newGame(){
     + "' height='"+ height +"'>";
   el.innerHTML = can;
   document.getElementById("game").appendChild(el);
+  //Reset snake
+  Snake = [[0,0],[1,0],[2,0]];
+  direction = RIGHT;
 }
 
+function step(){
+  //main function of the game. advance the game step by step.
+
+  //Set the new direction taken by the snake according to last key pressed
+  //The snake cannot do 180° and will continue forward
+  switch(key){
+    case UP:
+      if(direction!=DOWN) direction = UP;
+      break;
+    case DOWN:
+      if(direction!=UP) direction = DOWN;
+      break;
+    case RIGHT:
+      if(direction!=LEFT) direction = RIGHT;
+      break;
+    case LEFT:
+      if(direction!=RIGHT) direction = LEFT;
+      break;
+    default:
+      break;
+  }
+}
+
+//Some usefull variable
+var key;
+var direction;
+var score;
+var UP = 0;
+var RIGHT = 1;
+var DOWN = 2;
+var LEFT = 3;
+
+// Define the space state
 var EMPTY = 0;
 var SNAKE_BODY = 1;
 var SNAKE_HEAD = 2;
 var FOOD = 3;
 var WALL = 4;
 
+// Array containing the actual state of the game
 var world = [
+  [SNAKE_BODY, SNAKE_BODY, SNAKE_HEAD, EMPTY, EMPTY, EMPTY],
+  [EMPTY, WALL, EMPTY, FOOD,  EMPTY, EMPTY],
+  [EMPTY, WALL, EMPTY, EMPTY, EMPTY, EMPTY],
+  [EMPTY, EMPTY, EMPTY, EMPTY, WALL, EMPTY],
+  [EMPTY, EMPTY, EMPTY, EMPTY, WALL, EMPTY],
   [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-  [SNAKE_BODY, WALL, EMPTY, FOOD,  EMPTY, EMPTY],
-  [SNAKE_BODY, WALL, EMPTY, EMPTY, EMPTY, EMPTY],
-  [SNAKE_BODY, SNAKE_BODY, EMPTY, EMPTY, WALL, EMPTY],
-  [EMPTY, SNAKE_BODY, SNAKE_BODY, EMPTY, WALL, EMPTY],
-  [EMPTY, EMPTY, SNAKE_HEAD, EMPTY, EMPTY, EMPTY],
   [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
   [EMPTY, WALL, EMPTY, EMPTY, EMPTY, EMPTY],
   [EMPTY, WALL, EMPTY, EMPTY, EMPTY, EMPTY],
@@ -48,10 +88,14 @@ var world = [
   [EMPTY, EMPTY, EMPTY, EMPTY, WALL, EMPTY],
   [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
 ];
-  
+
+// Array of the actual snake position from back to head
+var Snake = [[0,0],[1,0],[2,0]];
+
+// global size of each space
 spaceSize = 50;
 
-//define color
+//define some color
 var BLACK = "#000000";
 var RED = "#FF0000";
 var GREEN = "#00FF00";
@@ -60,6 +104,8 @@ var BROWN = "#582900";
 var LIGHT_GREY = "#AAAAAA";
 
 function drawBoard(){
+  // Draw the whole game on the canvas
+
   let canvas = document.getElementById("myCanvas");
   let ctx = canvas.getContext("2d");
 
@@ -92,7 +138,7 @@ function drawBoard(){
         default:
           break;
       }
-      //color the space
+      //fill the space with the color
       ctx.fillRect(x*spaceSize, y*spaceSize,x*spaceSize+spaceSize-1,
                   y*spaceSize+spaceSize-1)
       x++;
