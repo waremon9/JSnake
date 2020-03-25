@@ -7,12 +7,26 @@ function create_sub() {
 window.addEventListener("load", create_sub);
 
 function startclicked(){
+  document.addEventListener('keydown', function(event) {
+    if(event.keyCode == 37) {
+        key = LEFT;
+    }
+    else if(event.keyCode == 38) {
+      key = UP;
+    }
+    else if(event.keyCode == 39) {
+      key = RIGHT;
+    }
+    else if(event.keyCode == 40) {
+      key = DOWN;
+    }
+  });
   // Click on start button and make it disapear and start the game
   document.getElementById("menu").removeChild
     (document.getElementById("start"));
   newGame();
   drawBoard();
-  setInterval(playGame,1000);
+  setInterval(playGame,gameSpeed);
 }
 
 function playGame(){
@@ -36,7 +50,7 @@ function newGame(){
   document.getElementById("game").appendChild(el);
   //Reset snake
   Snake = [[0,0],[1,0],[2,0]];
-  direction = DOWN;
+  direction = RIGHT;
 }
 
 function step(){
@@ -62,16 +76,13 @@ function step(){
   }
 
   //update Snake array
-  //First add the new position of the head
+
   let oldHead = newHead = Snake[Snake.length-1].slice();
 
   //old head become body
   world[oldHead[1]][oldHead[0]]=SNAKE_BODY;
 
-  console.log("my Array");
-  Snake.forEach(x =>{
-    console.log(x);
-  })
+  //add the new position of the head
   switch(direction){
     case UP:
       newHead[1]--;
@@ -87,13 +98,10 @@ function step(){
       break;
   }
   Snake.push(newHead);
-  console.log("after push");
-  Snake.forEach(x =>{
-    console.log(x);
-  })
 
   //offmap? (dead then)
-  if(world[0].length<=newHead[0] || newHead[0]<0 || world.length<=newHead[1] || newHead[1]<0) dead = true;
+  if(world[0].length<=newHead[0] || newHead[0]<0
+    || world.length<=newHead[1] || newHead[1]<0) dead = true;
 
   //Then check collision with items on map
   if(!dead){
@@ -102,14 +110,12 @@ function step(){
     //space isn't empty yet and we need to keep it until we checked if food is eaten.
     if(newSpace==FOOD){ //check for food first
       score++;
+      newApple();
     }else{
       //delete current butt and update world
       var xy = Snake.shift();
       world[xy[1]][xy[0]] = EMPTY;
-      console.log("after shift");
-      Snake.forEach(x =>{
-        console.log(x);
-      })
+      newSpace = world[newHead[1]][newHead[0]]; //re-set newSpace in case it's the butt last space
     }
     if(newSpace==WALL || newSpace==SNAKE_BODY){ //then check for wall or body part
       dead=true;
@@ -123,6 +129,32 @@ function step(){
   else gameOver();
 }
 
+function newApple(){
+  //make a new apple appear on the map
+  //We get all the empty space to not spawn the apple in a wall or in the snake
+  let possibleSpace = [];
+  let x = 0;
+  let y = 0;
+  world.forEach(line => {
+    line.forEach(space => {
+      if(space == EMPTY){
+        possibleSpace.push([x,y]);
+      }
+      x++;
+    })
+    y++;
+    x=0;
+  });
+  //choose a random one
+  let min=0; 
+  let max=possibleSpace.length-1;  
+  let random = Math.round(Math.random() * (+max - +min) + +min);
+  Math.round
+  //put food on it
+  let foodSpace = possibleSpace[random];
+  world[foodSpace[1]][foodSpace[0]] = FOOD;
+}
+
 //Some usefull variable
 var key;
 var direction;
@@ -132,6 +164,7 @@ var RIGHT = 1;
 var DOWN = 2;
 var LEFT = 3;
 var dead = false;
+var gameSpeed = 500;
 
 // Define the space state
 var EMPTY = 0;
