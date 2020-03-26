@@ -69,11 +69,12 @@ function newGame(){
 
   // Create a new canvas according to the size of the world
   let el = document.createElement("div");
+  el.setAttribute("id", "js-Canvas");
   let width = world[0].length * spaceSize;
   let height = world.length*spaceSize;
   let can =  "<canvas id='myCanvas' width='"+ width
     + "' height='"+ height +"'></canvas>";
-  let score = "<p>Score: <span id='score'>0</span></p>";
+  let score = "<p id='score2'>Score: <span id='score'>0</span></p>";
   el.innerHTML = score + can;
   document.getElementById("game").appendChild(el);
   //Reset snake
@@ -251,9 +252,10 @@ function gameOver(){
 
   //Add 2 button to restart a game or go back to menu
   let el = document.createElement("div");
+  el.setAttribute("id", "js-GameOver")
   let butMenu = "<input type='button' name='menu' value='Go back to menu' id='menuBut'>";
   let butAgain = "<input type='button' name='again' value='New game' id='againBut'>";
-  el.innerHTML = butMenu +  "<br>" + butAgain;
+  el.innerHTML = butMenu +  butAgain;
   document.getElementById("menu").appendChild(el);
 
   //event listener

@@ -9,7 +9,7 @@ body{
 #js-Menu{
 	background: rgba(255,255,255,90%);
 	border-radius: 0px 50px;	
-	padding: 69px	;
+	padding: 69px;
 	border: 3px solid green;
 	position: absolute;
 	top: 50%;
@@ -18,6 +18,20 @@ body{
 	display:block;
 	align-items:center;
 	justify-content: center;	
+}
+
+#js-Canvas{
+	background: rgba(255,255,255,90%);
+	border-radius: 0px 50px;	
+	padding: 50px;
+	border: 3px solid pink;
+	position: absolute;
+	top: 40%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	display:block;
+	align-items:center;
+	justify-content: center;
 }
 	
 #start{
@@ -52,4 +66,43 @@ select{
 	cursor: pointer;
 	color: white;
 	background: green;
+}
+
+#score, #score2{
+	text-align: center;
+	margin:auto;
+	font-size: 32px;
+	font-weight: bold;
+}
+
+#js-GameOver{;
+	position: absolute;
+	top: 90%;
+	left: 50%;
+	transform: translate(-50%, -50%);
+	text-align: center;
+	display: inline-block;
+}
+
+#js-GameOver input{
+	display: inline-block;
+	padding: 25px;
+	border: none;
+	background: pink;
+	font-size: 18px;
+	font-weight: bold;
+	border-radius: 0px 50px;
+	filter: grayscale(100%);
+	transition: 0.6s;
+}
+
+#js-GameOver input:hover{
+	cursor: pointer;
+	color: white;
+	filter: grayscale(0%);
+}
+
+#truc{
+	display:flex;
+	flex-wrap:wrap;
 }
