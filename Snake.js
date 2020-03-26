@@ -23,9 +23,9 @@ function startclicked(){
   });
   // Click on start button and make it disapear and start the game (also again button)
   document.getElementById("menu").textContent = "";
-  newGame();
-  drawBoard();
-  setInterval(playGame,gameSpeed);
+
+  //go get the data and use them before callin new game
+  getJSONContentMap(1);
 }
 
 function playGame(){
@@ -33,15 +33,17 @@ function playGame(){
 }
 
 function newGame(){
+  dead = false; //not dead when starting
   // Delete canvas from last game if exist
   let oldCan = document.getElementById("myCanvas");
   if(oldCan != null){
     let abc = document.getElementById("game")
     abc.textContent = ""; //clear everything, Not the best way but, hey, it works.
   }
+
   // Create a new canvas according to the size of the world
   let el = document.createElement("div");
-  let width = world[0].length*spaceSize;
+  let width = world[0].length * spaceSize;
   let height = world.length*spaceSize;
   let can =  "<canvas id='myCanvas' width='"+ width
     + "' height='"+ height +"'></canvas>";
@@ -49,10 +51,11 @@ function newGame(){
   el.innerHTML = score + can;
   document.getElementById("game").appendChild(el);
   //Reset snake
-  Snake = [[0,0],[1,0],[2,0]];
-  direction = RIGHT;
   score = 0;
   newApple();
+
+  drawBoard();
+  setInterval(playGame,gameSpeed);
 }
 
 function step(){
@@ -176,21 +179,8 @@ var SNAKE_HEAD = 2;
 var FOOD = 3;
 var WALL = 4;
 
-// Array containing the actual state of the game
-var world = [
-  [SNAKE_BODY, SNAKE_BODY, SNAKE_HEAD, EMPTY, EMPTY, EMPTY],
-  [EMPTY, WALL, EMPTY, EMPTY,  EMPTY, EMPTY],
-  [EMPTY, WALL, EMPTY, EMPTY, EMPTY, EMPTY],
-  [EMPTY, EMPTY, EMPTY, EMPTY, WALL, EMPTY],
-  [EMPTY, EMPTY, EMPTY, EMPTY, WALL, EMPTY],
-  [EMPTY, EMPTY, WALL, EMPTY, EMPTY, EMPTY],
-  [EMPTY, EMPTY, EMPTY, WALL, EMPTY, EMPTY],
-  [EMPTY, WALL, EMPTY, EMPTY, EMPTY, EMPTY],
-  [EMPTY, WALL, EMPTY, EMPTY, EMPTY, EMPTY],
-  [EMPTY, EMPTY, EMPTY, EMPTY, WALL, EMPTY],
-  [EMPTY, EMPTY, EMPTY, EMPTY, WALL, EMPTY],
-  [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-];
+// Array containing the actual state of the game. content added when JSON file is read. (see line ~330)
+var world;
 
 // Array of the actual snake position from back to head
 var Snake = [[0,0],[1,0],[2,0]];
@@ -305,4 +295,54 @@ function drawBoard(){
     ctx.lineTo(canWidth,spaceSize*j);
   }
   ctx.stroke();
+}
+
+function getJSONContentMap(nb){
+  //Get the content of JSON file for map
+  var req = new XMLHttpRequest();
+  req.open("GET", "JSON/Map"+nb+".json");
+  req.onerror = function() {
+      console.log("Échec de chargement "+url);
+  };
+  req.onload = function() {
+      if (req.status === 200) {
+        var data = JSON.parse(req.responseText);
+        //use the data 
+        updateVariable(data);
+      } else {
+        console.log("Erreur " + req.status);
+      }
+  };
+  req.send();
+}
+
+function updateVariable(data){
+  world = data.map; //new world created from data
+  snakeStart = data.startPoint; //initialise snake position and direction
+  switch(data.startDirection){
+    case "UP":
+      Snake = [snakeStart, [snakeStart[0],snakeStart[1]-1] ,[snakeStart[0],snakeStart[1]-2]];
+      direction = UP;
+      break;
+    case "DOWN":
+      Snake = [snakeStart, [snakeStart[0],snakeStart[1]+1] ,[snakeStart[0],snakeStart[1]+2]];
+      direction = DOWN;
+      break;
+    case "RIGHT":
+      Snake = [snakeStart, [snakeStart[0]+1,snakeStart[1]] ,[snakeStart[0]+2,snakeStart[1]]];
+      direction = RIGHT;
+      break;
+    case "LEFT":
+      Snake = [snakeStart, [snakeStart[0]-1,snakeStart[1]] ,[snakeStart[0]-2,snakeStart[1]]];
+      direction = LEFT;
+      break;
+    default:
+      console.log("Error data direction")
+      break;
+  }
+  //add snake to the world
+  world[Snake[0][1]][Snake[0][0]] = SNAKE_BODY;
+  world[Snake[1][1]][Snake[1][0]] = SNAKE_BODY;
+  world[Snake[2][1]][Snake[2][0]] = SNAKE_HEAD;
+  newGame();
 }
