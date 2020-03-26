@@ -30,6 +30,7 @@ function startclicked(){
 
 function playGame(){
   if(!dead) step();
+  else clearInterval(loop);
 }
 
 function newGame(){
@@ -52,10 +53,11 @@ function newGame(){
   document.getElementById("game").appendChild(el);
   //Reset snake
   score = 0;
+  key = null;
   newApple();
 
   drawBoard();
-  setInterval(playGame,gameSpeed);
+  loop = setInterval(playGame,gameSpeed);
 }
 
 function step(){
@@ -171,6 +173,7 @@ var DOWN = 2;
 var LEFT = 3;
 var dead = false;
 var gameSpeed = 500;
+var loop;
 
 // Define the space state
 var EMPTY = 0;
@@ -317,6 +320,7 @@ function getJSONContentMap(nb){
 }
 
 function updateVariable(data){
+  console.log("yolo");
   world = data.map; //new world created from data
   snakeStart = data.startPoint; //initialise snake position and direction
   switch(data.startDirection){
