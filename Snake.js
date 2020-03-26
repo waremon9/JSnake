@@ -82,21 +82,23 @@ function step(){
 
   //Set the new direction taken by the snake according to last key pressed
   //The snake cannot do 180° and will continue forward
-  switch(key){
-    case UP:
-      if(direction!=DOWN) direction = UP;
-      break;
-    case DOWN:
-      if(direction!=UP) direction = DOWN;
-      break;
-    case RIGHT:
-      if(direction!=LEFT) direction = RIGHT;
-      break;
-    case LEFT:
-      if(direction!=RIGHT) direction = LEFT;
-      break;
-    default:
-      break;
+  if(true){
+    switch(key){
+      case UP:
+        if(direction!=DOWN) direction = UP;
+        break;
+      case DOWN:
+        if(direction!=UP) direction = DOWN;
+        break;
+      case RIGHT:
+        if(direction!=LEFT) direction = RIGHT;
+        break;
+      case LEFT:
+        if(direction!=RIGHT) direction = LEFT;
+        break;
+      default:
+        break;
+    }
   }
 
   //update Snake array
@@ -198,6 +200,7 @@ var SNAKE_BODY = 1;
 var SNAKE_HEAD = 2;
 var FOOD = 3;
 var WALL = 4;
+var ICE = 5;
 
 // Array containing the actual state of the game. content added when JSON file is read. (see line ~330)
 var world;
@@ -215,6 +218,9 @@ var GREEN = "#00FF00";
 var DARK_GREEN = "#00AA00";
 var BROWN = "#582900";
 var LIGHT_GREY = "#AAAAAA";
+var LIGHT_BLUE = "#AAAAFF";
+var PINK = "#FE7E9C";
+var LIGHT_ORANGE = "#FFA356";
 
 function gameOver(){
   //game-over screen
@@ -266,16 +272,19 @@ function drawBoard(){
           ctx.fillStyle = LIGHT_GREY;
           break;
         case SNAKE_BODY:
-          ctx.fillStyle = GREEN;
+          ctx.fillStyle = PINK;
           break;
         case SNAKE_HEAD:
-          ctx.fillStyle = DARK_GREEN;
+          ctx.fillStyle = LIGHT_ORANGE;
           break;
           case FOOD:
             ctx.fillStyle = RED;
             break;
         case WALL:
           ctx.fillStyle = BROWN;
+          break;
+        case ICE:
+          ctx.fillStyle = LIGHT_BLUE;
           break;
         default:
           break;
