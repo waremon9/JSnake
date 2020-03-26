@@ -42,7 +42,7 @@ function startclicked(){
   document.getElementById("menu").textContent = "";
 
   //go get the data and use them before callin new game
-  getJSONContentMap(2);
+  getJSONContentMap(1);
 }
 
 function playGame(){
@@ -80,9 +80,15 @@ function newGame(){
 function step(){
   //main function of the game. advance the game step by step.
 
+  //get future position of head and what it encounter
+
+  let nextHeadPosition = Snake[Snake.length-1].slice();//actual, updated after switch
+  let actualPositionType = world[nextHeadPosition[1]][nextHeadPosition[0]];
+
   //Set the new direction taken by the snake according to last key pressed
   //The snake cannot do 180° and will continue forward
-  if(true){
+  //it cannot change if on ice
+  if(actualPositionType != ICE){
     switch(key){
       case UP:
         if(direction!=DOWN) direction = UP;
@@ -101,54 +107,51 @@ function step(){
     }
   }
 
-  //update Snake array
-
-  let oldHead = newHead = Snake[Snake.length-1].slice();
-
-  //old head become body
-  world[oldHead[1]][oldHead[0]]=SNAKE_BODY;
-
-  //add the new position of the head
+  //update the position of the head
   switch(direction){
     case UP:
-      newHead[1]--;
+      nextHeadPosition[1]--;
       break;
     case DOWN:
-      newHead[1]++;
+      nextHeadPosition[1]++;
       break;
     case RIGHT:
-      newHead[0]++;
+      nextHeadPosition[0]++;
       break;
     case LEFT:
-      newHead[0]--;
+      nextHeadPosition[0]--;
       break;
   }
-  Snake.push(newHead);
+  Snake.push(nextHeadPosition);
+  
 
   //offmap? (dead then)
-  if(world[0].length<=newHead[0] || newHead[0]<0
-    || world.length<=newHead[1] || newHead[1]<0) dead = true;
+  if(world[0].length<=nextHeadPosition[0] || nextHeadPosition[0]<0
+    || world.length<=nextHeadPosition[1] || nextHeadPosition[1]<0) dead = true;
 
   //Then check collision with items on map
   if(!dead){
-    let newSpace = world[newHead[1]][newHead[0]];
+    let nextPositionType = world[nextHeadPosition[1]][nextHeadPosition[0]];
     //not a switch because we can't check all case at once since snake's butt's last
     //space isn't empty yet and we need to keep it until we checked if food is eaten.
-    if(newSpace==FOOD){ //check for food first
+    if(nextPositionType==FOOD){ //check for food first
+      world[nextHeadPosition[1]][nextHeadPosition[0]] = EMPTY;
       score+=10;
       document.getElementById("score").textContent = score;//update score display
       newApple();
     }else{
       //delete current butt and update world
       var xy = Snake.shift();
-      world[xy[1]][xy[0]] = EMPTY;
-      newSpace = world[newHead[1]][newHead[0]]; //re-set newSpace in case it's the butt last space
     }
-    if(newSpace==WALL || newSpace==SNAKE_BODY){ //then check for wall or body part
+    if(nextPositionType==WALL){ //then check for wall
       dead=true;
     }
-    //everithyng checked, add the head to the map
-    world[newHead[1]][newHead[0]]=SNAKE_HEAD;
+    Snake.forEach(bodyPart => { //or body part
+      if (Snake[Snake.length-1] != bodyPart){  //exclude the head 
+        if (bodyPart[0] == nextHeadPosition[0] && bodyPart[1] == nextHeadPosition[1]) dead = true;
+        //parceque bodyPart == nextHeadPosition ca marche pas, c'est pas le même tableau
+      }   
+    });
   }
 
   //draw the new state
@@ -165,7 +168,8 @@ function newApple(){
   world.forEach(line => {
     line.forEach(space => {
       if(space == EMPTY){
-        possibleSpace.push([x,y]);
+        //check if space not occupied by snake
+        if(!Snake.some(e => e[0]==x && e[1]==y)) possibleSpace.push([x,y]);
       }
       x++;
     })
@@ -217,7 +221,7 @@ var RED = "#FF0000";
 var GREEN = "#00FF00";
 var DARK_GREEN = "#00AA00";
 var BROWN = "#582900";
-var LIGHT_GREY = "#AAAAAA";
+var LIGHT_GREY = "rgba(200, 200, 200, 0.5)";
 var LIGHT_BLUE = "#AAAAFF";
 var PINK = "#FE7E9C";
 var LIGHT_ORANGE = "#FFA356";
@@ -257,6 +261,9 @@ function drawBoard(){
   let canvas = document.getElementById("myCanvas");
   let ctx = canvas.getContext("2d");
 
+  //erase
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+
   // Define useful variable.
   canHeight = canvas.height;
   canWidth = canvas.width;
@@ -271,15 +278,9 @@ function drawBoard(){
         case EMPTY:
           ctx.fillStyle = LIGHT_GREY;
           break;
-        case SNAKE_BODY:
-          ctx.fillStyle = PINK;
+        case FOOD:
+          ctx.fillStyle = RED;
           break;
-        case SNAKE_HEAD:
-          ctx.fillStyle = LIGHT_ORANGE;
-          break;
-          case FOOD:
-            ctx.fillStyle = RED;
-            break;
         case WALL:
           ctx.fillStyle = BROWN;
           break;
@@ -290,12 +291,23 @@ function drawBoard(){
           break;
       }
       //fill the space with the color
-      ctx.fillRect(x*spaceSize, y*spaceSize,x*spaceSize+spaceSize-1,
-                  y*spaceSize+spaceSize-1)
+      ctx.fillRect(x*spaceSize, y*spaceSize, 
+                  spaceSize, spaceSize)
       x++;
     })
     x=0;
     y++;
+  });
+
+
+
+  //draw the snake on top of the space
+  Snake.forEach(position => {
+    if(position != Snake[Snake.length-1]) ctx.fillStyle = PINK;
+    else ctx.fillStyle = LIGHT_ORANGE;
+
+    ctx.fillRect(position[0]*spaceSize, position[1]*spaceSize,
+      spaceSize, spaceSize)
   });
 
   //draw the grid
@@ -355,9 +367,5 @@ function updateVariable(data){
       console.log("Error data direction")
       break;
   }
-  //add snake to the world
-  world[Snake[0][1]][Snake[0][0]] = SNAKE_BODY;
-  world[Snake[1][1]][Snake[1][0]] = SNAKE_BODY;
-  world[Snake[2][1]][Snake[2][0]] = SNAKE_HEAD;
   newGame();
 }
