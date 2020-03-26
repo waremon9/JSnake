@@ -45,12 +45,15 @@ function newGame(){
   let width = world[0].length*spaceSize;
   let height = world.length*spaceSize;
   let can =  "<canvas id='myCanvas' width='"+ width
-    + "' height='"+ height +"'>";
-  el.innerHTML = can;
+    + "' height='"+ height +"'></canvas>";
+  let score = "<p>Score: <span id='score'>0</span></p>";
+  el.innerHTML = score + can;
   document.getElementById("game").appendChild(el);
   //Reset snake
   Snake = [[0,0],[1,0],[2,0]];
   direction = RIGHT;
+  score = 0;
+  newApple();
 }
 
 function step(){
@@ -109,7 +112,8 @@ function step(){
     //not a switch because we can't check all case at once since snake's butt's last
     //space isn't empty yet and we need to keep it until we checked if food is eaten.
     if(newSpace==FOOD){ //check for food first
-      score++;
+      score+=10;
+      document.getElementById("score").textContent = score;
       newApple();
     }else{
       //delete current butt and update world
@@ -158,7 +162,7 @@ function newApple(){
 //Some usefull variable
 var key;
 var direction;
-var score;
+var score = 0;
 var UP = 0;
 var RIGHT = 1;
 var DOWN = 2;
@@ -176,12 +180,12 @@ var WALL = 4;
 // Array containing the actual state of the game
 var world = [
   [SNAKE_BODY, SNAKE_BODY, SNAKE_HEAD, EMPTY, EMPTY, EMPTY],
-  [EMPTY, WALL, EMPTY, FOOD,  EMPTY, EMPTY],
+  [EMPTY, WALL, EMPTY, EMPTY,  EMPTY, EMPTY],
   [EMPTY, WALL, EMPTY, EMPTY, EMPTY, EMPTY],
   [EMPTY, EMPTY, EMPTY, EMPTY, WALL, EMPTY],
   [EMPTY, EMPTY, EMPTY, EMPTY, WALL, EMPTY],
-  [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
-  [EMPTY, EMPTY, EMPTY, EMPTY, EMPTY, EMPTY],
+  [EMPTY, EMPTY, WALL, EMPTY, EMPTY, EMPTY],
+  [EMPTY, EMPTY, EMPTY, WALL, EMPTY, EMPTY],
   [EMPTY, WALL, EMPTY, EMPTY, EMPTY, EMPTY],
   [EMPTY, WALL, EMPTY, EMPTY, EMPTY, EMPTY],
   [EMPTY, EMPTY, EMPTY, EMPTY, WALL, EMPTY],
