@@ -7,9 +7,9 @@ function loadMenu(){
 
   //add all button with eventListener
   let el = document.createElement("div");
-  let title = "<h1>Welcome to Snake!</h1>"
+  let title = "<h1>Welcome to Snake!</h1>";
   let button = "<input type='button' name='start' value='Start new Game' id='start'>";
-  let text = "<p>Choose your level :</p>";
+  let text = "<p id='choice'>Choose your level :</p>";
   let combo = "<select><option>1</option><option>2</option></select>"
   el.innerHTML = title + button + text + combo;
   document.getElementById("menu").appendChild(el);
