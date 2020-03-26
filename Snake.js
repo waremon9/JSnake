@@ -1,4 +1,5 @@
 var nbLevel = 3; //used only for the comboBox level, up here for easy access
+var selectedLevel; //keep in memory the selected level in case of restart
 
 function loadMenu(){
   //create the whole menu
@@ -45,11 +46,17 @@ document.addEventListener('keydown', function(event) {
 
 function startclicked(){
   //get level number
-  let levelNumber = document.querySelector('[name=comboLevels]').value;
+  let levelNumber;
+  if(document.querySelector('[name=comboLevels]')==null){
+    levelNumber = selectedLevel;
+  } else {
+    levelNumber = document.querySelector('[name=comboLevels]').value;
+  }
   //delete the menu
   document.getElementById("menu").textContent = "";
 
   //go get the data and use them before callin new game
+  selectedLevel = levelNumber;
   getJSONContentMap(levelNumber);
 }
 
