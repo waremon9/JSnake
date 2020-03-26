@@ -1,8 +1,8 @@
 function create_sub() {
   // sub all buttons to event
-    document.getElementById("start")
-      .addEventListener('click', startclicked)
-  }
+  document.getElementById("start")
+    .addEventListener('click', startclicked)
+}
 // wait for window to load
 window.addEventListener("load", create_sub);
 
@@ -21,9 +21,8 @@ function startclicked(){
       key = DOWN;
     }
   });
-  // Click on start button and make it disapear and start the game
-  document.getElementById("menu").removeChild
-    (document.getElementById("start"));
+  // Click on start button and make it disapear and start the game (also again button)
+  document.getElementById("menu").textContent = "";
   newGame();
   drawBoard();
   setInterval(playGame,gameSpeed);
@@ -209,7 +208,40 @@ var LIGHT_GREY = "#AAAAAA";
 
 function gameOver(){
   //game-over screen
-  console.log("perdu");
+
+  canvas = document.getElementById("myCanvas");
+  ctx = canvas.getContext("2d");
+
+  ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
+  ctx.fillRect(0,0,canvas.width,canvas.height);
+  ctx.fillStyle = BLACK;
+  ctx.font = "40px Algerian";
+  ctx.textAlign = "center";
+  ctx.fillText("GAME OVER",canvas.width/2,canvas.height/2);
+
+  let el = document.createElement("div");
+  let butMenu = "<input type='button' name='menu' value='Go back to menu' id='menuBut'>";
+  let butAgain = "<input type='button' name='again' value='New game' id='againBut'>";
+  el.innerHTML = butMenu +  "<br>" + butAgain;
+  document.getElementById("menu").appendChild(el);
+
+  
+  document.getElementById("menuBut")
+    .addEventListener('click', menuClicked);
+  document.getElementById("againBut")
+    .addEventListener('click', startclicked);
+}
+
+function menuClicked(){
+  document.getElementById("game").textContent = "";
+  document.getElementById("menu").textContent = "";
+  
+  let el = document.createElement("div");
+  let button = "<input type='button' name='start' value='Start new Game' id='start'>";
+  el.innerHTML = button;
+  document.getElementById("menu").appendChild(el);
+  document.getElementById("start")
+    .addEventListener('click', startclicked);
 }
 
 function drawBoard(){
