@@ -1,3 +1,5 @@
+var nbLevel = 3; //used only for the comboBox level, up here for easy access
+
 function loadMenu(){
   //create the whole menu
 
@@ -11,7 +13,11 @@ function loadMenu(){
   let title = "<h1>Welcome to Snake!</h1>";
   let button = "<input type='button' name='start' value='Start new Game' id='start'>";
   let text = "<p id='choice'>Choose your level :</p>";
-  let combo = "<select><option>1</option><option>2</option></select>"
+  let combo = "<select name='comboLevels'>";
+  for (var i = 0; i<nbLevel; i++){
+  	combo += "<option>"+(i+1)+"</option>";
+  }
+  combo+="</select>";
   el.innerHTML = title + button + text + combo;
   document.getElementById("menu").appendChild(el);
   document.getElementById("start")
@@ -38,11 +44,13 @@ document.addEventListener('keydown', function(event) {
 });
 
 function startclicked(){
+  //get level number
+  let levelNumber = document.querySelector('[name=comboLevels]').value;
   //delete the menu
   document.getElementById("menu").textContent = "";
 
   //go get the data and use them before callin new game
-  getJSONContentMap(1);
+  getJSONContentMap(levelNumber);
 }
 
 function playGame(){
