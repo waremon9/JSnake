@@ -112,7 +112,7 @@ function step(){
     //space isn't empty yet and we need to keep it until we checked if food is eaten.
     if(newSpace==FOOD){ //check for food first
       score+=10;
-      document.getElementById("score").textContent = score;
+      document.getElementById("score").textContent = score;//update score display
       newApple();
     }else{
       //delete current butt and update world
@@ -212,20 +212,23 @@ function gameOver(){
   canvas = document.getElementById("myCanvas");
   ctx = canvas.getContext("2d");
 
+  //Draw a black rectangle with 50% transparency
   ctx.fillStyle = "rgba(255, 255, 255, 0.5)";
   ctx.fillRect(0,0,canvas.width,canvas.height);
+  //Then add "Game Over" at the center of the canvas
   ctx.fillStyle = BLACK;
   ctx.font = "40px Algerian";
   ctx.textAlign = "center";
   ctx.fillText("GAME OVER",canvas.width/2,canvas.height/2);
 
+  //Add 2 button to restart a game or go back to menu
   let el = document.createElement("div");
   let butMenu = "<input type='button' name='menu' value='Go back to menu' id='menuBut'>";
   let butAgain = "<input type='button' name='again' value='New game' id='againBut'>";
   el.innerHTML = butMenu +  "<br>" + butAgain;
   document.getElementById("menu").appendChild(el);
 
-  
+  //event listener
   document.getElementById("menuBut")
     .addEventListener('click', menuClicked);
   document.getElementById("againBut")
@@ -233,9 +236,11 @@ function gameOver(){
 }
 
 function menuClicked(){
+  //clear canvas and button
   document.getElementById("game").textContent = "";
   document.getElementById("menu").textContent = "";
   
+  //add button "start game" with eventListener
   let el = document.createElement("div");
   let button = "<input type='button' name='start' value='Start new Game' id='start'>";
   el.innerHTML = button;
