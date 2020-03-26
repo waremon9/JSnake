@@ -1,27 +1,40 @@
-function create_sub() {
-  // sub all buttons to event
+function loadMenu(){
+  //create the whole menu
+
+  //delete what was here before
+  document.getElementById("game").textContent = "";
+  document.getElementById("menu").textContent = "";
+
+  //add all button with eventListener
+  let el = document.createElement("div");
+  let button = "<input type='button' name='start' value='Start new Game' id='start'>";
+  el.innerHTML = button;
+  document.getElementById("menu").appendChild(el);
   document.getElementById("start")
-    .addEventListener('click', startclicked)
+    .addEventListener('click', startclicked);
 }
+
 // wait for window to load
-window.addEventListener("load", create_sub);
+window.addEventListener("load", loadMenu);
+
+//catch correct input
+document.addEventListener('keydown', function(event) {
+  if(event.keyCode == 37) {
+      key = LEFT;
+  }
+  else if(event.keyCode == 38) {
+    key = UP;
+  }
+  else if(event.keyCode == 39) {
+    key = RIGHT;
+  }
+  else if(event.keyCode == 40) {
+    key = DOWN;
+  }
+});
 
 function startclicked(){
-  document.addEventListener('keydown', function(event) {
-    if(event.keyCode == 37) {
-        key = LEFT;
-    }
-    else if(event.keyCode == 38) {
-      key = UP;
-    }
-    else if(event.keyCode == 39) {
-      key = RIGHT;
-    }
-    else if(event.keyCode == 40) {
-      key = DOWN;
-    }
-  });
-  // Click on start button and make it disapear and start the game (also again button)
+  //delete the menu
   document.getElementById("menu").textContent = "";
 
   //go get the data and use them before callin new game
@@ -223,22 +236,8 @@ function gameOver(){
 
   //event listener
   document.getElementById("menuBut")
-    .addEventListener('click', menuClicked);
+    .addEventListener('click', loadMenu);
   document.getElementById("againBut")
-    .addEventListener('click', startclicked);
-}
-
-function menuClicked(){
-  //clear canvas and button
-  document.getElementById("game").textContent = "";
-  document.getElementById("menu").textContent = "";
-  
-  //add button "start game" with eventListener
-  let el = document.createElement("div");
-  let button = "<input type='button' name='start' value='Start new Game' id='start'>";
-  el.innerHTML = button;
-  document.getElementById("menu").appendChild(el);
-  document.getElementById("start")
     .addEventListener('click', startclicked);
 }
 
@@ -303,7 +302,6 @@ function drawBoard(){
 function getJSONContentMap(nb){
   //Get the content of JSON file for map
   var req = new XMLHttpRequest();
-  console.log(nb);
   req.open("GET", "JSON/Map"+nb+".json");
   req.onerror = function() {
       console.log("Échec de chargement "+url);
