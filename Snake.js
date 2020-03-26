@@ -7,6 +7,7 @@ function loadMenu(){
 
   //add all button with eventListener
   let el = document.createElement("div");
+  el.setAttribute("id", "js-Menu");
   let title = "<h1>Welcome to Snake!</h1>";
   let button = "<input type='button' name='start' value='Start new Game' id='start'>";
   let text = "<p id='choice'>Choose your level :</p>";
