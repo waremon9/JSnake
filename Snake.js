@@ -25,7 +25,7 @@ function startclicked(){
   document.getElementById("menu").textContent = "";
 
   //go get the data and use them before callin new game
-  getJSONContentMap(1);
+  getJSONContentMap(2);
 }
 
 function playGame(){
@@ -303,6 +303,7 @@ function drawBoard(){
 function getJSONContentMap(nb){
   //Get the content of JSON file for map
   var req = new XMLHttpRequest();
+  console.log(nb);
   req.open("GET", "JSON/Map"+nb+".json");
   req.onerror = function() {
       console.log("Échec de chargement "+url);
@@ -320,7 +321,6 @@ function getJSONContentMap(nb){
 }
 
 function updateVariable(data){
-  console.log("yolo");
   world = data.map; //new world created from data
   snakeStart = data.startPoint; //initialise snake position and direction
   switch(data.startDirection){
