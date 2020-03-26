@@ -1,4 +1,4 @@
-var nbLevel = 3; //used only for the comboBox level, up here for easy access
+var nbLevel = 4; //used only for the comboBox level, up here for easy access
 var selectedLevel; //keep in memory the selected level in case of restart
 
 function loadMenu(){
@@ -104,7 +104,7 @@ function step(){
   //Set the new direction taken by the snake according to last key pressed
   //The snake cannot do 180° and will continue forward
   //it cannot change if on ice
-  if(actualPositionType != ICE){
+  if(actualPositionType != ICE && actualPositionType != PORTAL){
     switch(key){
       case UP:
         if(direction!=DOWN) direction = UP;
@@ -124,6 +124,15 @@ function step(){
   }
 
   //update the position of the head
+  if(actualPositionType == PORTAL){
+    if(listPortal[0][0] == nextHeadPosition[0] && listPortal[0][1] == nextHeadPosition[1] ){
+      nextHeadPosition[0] = listPortal[1][0];
+      nextHeadPosition[1] = listPortal[1][1];
+    }else{
+      nextHeadPosition[0] = listPortal[0][0];
+      nextHeadPosition[1] = listPortal[0][1];
+    }
+  }
   switch(direction){
     case UP:
       nextHeadPosition[1]--;
@@ -213,6 +222,7 @@ var LEFT = 3;
 var dead = false;
 var gameSpeed = 500;
 var loop;
+var listPortal = [];
 
 // Define the space state
 var EMPTY = 0;
@@ -221,6 +231,7 @@ var SNAKE_HEAD = 2;
 var FOOD = 3;
 var WALL = 4;
 var ICE = 5;
+var PORTAL = 6;
 
 // Array containing the actual state of the game. content added when JSON file is read. (see line ~330)
 var world;
@@ -239,6 +250,7 @@ var DARK_GREEN = "#00AA00";
 var BROWN = "#582900";
 var LIGHT_GREY = "rgba(200, 200, 200, 0.5)";
 var LIGHT_BLUE = "#AAAAFF";
+var DARK_BLUE = "#2000AA";
 var PINK = "#FE7E9C";
 var LIGHT_ORANGE = "#FFA356";
 
@@ -304,6 +316,9 @@ function drawBoard(){
         case ICE:
           ctx.fillStyle = LIGHT_BLUE;
           break;
+        case PORTAL:
+          ctx.fillStyle = DARK_BLUE;
+          break;
         default:
           break;
       }
@@ -362,6 +377,7 @@ function getJSONContentMap(nb){
 
 function updateVariable(data){
   world = data.map; //new world created from data
+  listPortal = data.portal;
   snakeStart = data.startPoint; //initialise snake position and direction
   switch(data.startDirection){
     case "UP":
