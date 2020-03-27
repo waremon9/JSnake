@@ -1,4 +1,4 @@
-var nbLevel = 4; //used only for the comboBox level, up here for easy access
+var nbLevel = 1; //used only for the comboBox level, up here for easy access
 var selectedLevel; //keep in memory the selected level in case of restart
 
 function loadMenu(){
@@ -87,7 +87,6 @@ function newGame(){
   //Reset snake
   score = 0;
   key = null;
-  newApple();
 
   drawBoard();
   loop = setInterval(playGame,gameSpeed);
@@ -160,9 +159,16 @@ function step(){
     //not a switch because we can't check all case at once since snake's butt's last
     //space isn't empty yet and we need to keep it until we checked if food is eaten.
     if(nextPositionType==FOOD){ //check for food first
-      world[nextHeadPosition[1]][nextHeadPosition[0]] = EMPTY;
       score+=10;
       document.getElementById("score").textContent = score;//update score display
+      //delete the eaten food from the list (there can be multiple food at once)
+      let i = 0;
+      listFood.forEach(element => {
+        if(element[0] == nextHeadPosition[1] && element[0] == nextHeadPosition[1]) index = i;
+      });
+      if (index > -1) {
+        listFood.splice(index, 1);
+      }
       newApple();
     }else{
       //delete current butt and update world
@@ -178,6 +184,9 @@ function step(){
       }   
     });
   }
+
+  //update world
+  updateWorld();
 
   //draw the new state
   if(!dead) drawBoard();
@@ -206,9 +215,10 @@ function newApple(){
   let max=possibleSpace.length-1;  
   let random = Math.round(Math.random() * (+max - +min) + +min);
   Math.round
-  //put food on it
+  //add it to the list
   let foodSpace = possibleSpace[random];
-  world[foodSpace[1]][foodSpace[0]] = FOOD;
+  listFood.push([foodSpace[0],foodSpace[1]]);
+  console.log(listFood);
 }
 
 //Some usefull variable
@@ -222,7 +232,13 @@ var LEFT = 3;
 var dead = false;
 var gameSpeed = 500;
 var loop;
-var listPortal = [];
+var listWall;
+var listIce;
+var listPortal;
+var listFood;
+var world ;
+var worldHeight;
+var worldWidth;
 
 // Define the space state
 var EMPTY = 0;
@@ -307,6 +323,12 @@ function drawBoard(){
         case EMPTY:
           ctx.fillStyle = LIGHT_GREY;
           break;
+        case SNAKE_BODY:
+          ctx.fillStyle = PINK;
+          break;
+        case SNAKE_HEAD:
+          ctx.fillStyle = LIGHT_ORANGE;
+          break;
         case FOOD:
           ctx.fillStyle = RED;
           break;
@@ -329,17 +351,6 @@ function drawBoard(){
     })
     x=0;
     y++;
-  });
-
-
-
-  //draw the snake on top of the space
-  Snake.forEach(position => {
-    if(position != Snake[Snake.length-1]) ctx.fillStyle = PINK;
-    else ctx.fillStyle = LIGHT_ORANGE;
-
-    ctx.fillRect(position[0]*spaceSize, position[1]*spaceSize,
-      spaceSize, spaceSize)
   });
 
   //draw the grid
@@ -375,25 +386,46 @@ function getJSONContentMap(nb){
   req.send();
 }
 
+function updateWorld(){
+  world = [];
+  for(var y = 0; y<worldHeight; y++){
+    let line = [];
+    for(var x = 0; x<worldWidth; x++){
+      if(listWall.some(e => e[0]==x && e[1]==y)) line.push(WALL);
+      else if(listIce.some(e => e[0]==x && e[1]==y)) line.push(ICE);
+      else if(listPortal.some(e => e[0]==x && e[1]==y)) line.push(PORTAL);
+      else if(listFood.some(e => e[0]==x && e[1]==y)) line.push(FOOD);
+      else if(Snake.some(e => e[0]==x && e[1]==y)){
+        if(Snake[Snake.length-1][0] == x && Snake[Snake.length-1][1] == y) line.push(SNAKE_HEAD);
+        else line.push(SNAKE_BODY);
+      }
+      else line.push(EMPTY);
+    }
+    world.push(line);
+  }
+}
+
 function updateVariable(data){
-  world = data.map; //new world created from data
+  worldWidth = data.dimensions[0];
+  worldHeight = data.dimensions[1];
+  listWall = data.walls;
+  listIce = data.ice;
   listPortal = data.portal;
-  snakeStart = data.startPoint; //initialise snake position and direction
+  Snake = data.snake;
+  listFood = data.food;
+  updateWorld();
+
   switch(data.startDirection){
     case "UP":
-      Snake = [snakeStart, [snakeStart[0],snakeStart[1]-1] ,[snakeStart[0],snakeStart[1]-2]];
       direction = UP;
       break;
     case "DOWN":
-      Snake = [snakeStart, [snakeStart[0],snakeStart[1]+1] ,[snakeStart[0],snakeStart[1]+2]];
       direction = DOWN;
       break;
     case "RIGHT":
-      Snake = [snakeStart, [snakeStart[0]+1,snakeStart[1]] ,[snakeStart[0]+2,snakeStart[1]]];
       direction = RIGHT;
       break;
     case "LEFT":
-      Snake = [snakeStart, [snakeStart[0]-1,snakeStart[1]] ,[snakeStart[0]-2,snakeStart[1]]];
       direction = LEFT;
       break;
     default:
