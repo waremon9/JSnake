@@ -89,7 +89,7 @@ function newGame(){
   key = null;
 
   drawBoard();
-  loop = setInterval(playGame,gameSpeed);
+  loop = setInterval(playGame, gameSpeed);
 }
 
 function step(){
@@ -164,7 +164,7 @@ function step(){
       //delete the eaten food from the list (there can be multiple food at once)
       let i = 0;
       listFood.forEach(element => {
-        if(element[0] == nextHeadPosition[1] && element[0] == nextHeadPosition[1]) index = i;
+        if(element[0] == nextHeadPosition[0] && element[1] == nextHeadPosition[1]) index = i;
       });
       if (index > -1) {
         listFood.splice(index, 1);
@@ -218,7 +218,6 @@ function newApple(){
   //add it to the list
   let foodSpace = possibleSpace[random];
   listFood.push([foodSpace[0],foodSpace[1]]);
-  console.log(listFood);
 }
 
 //Some usefull variable
@@ -230,13 +229,13 @@ var RIGHT = 1;
 var DOWN = 2;
 var LEFT = 3;
 var dead = false;
-var gameSpeed = 500;
+var gameSpeed;
 var loop;
-var listWall;
-var listIce;
-var listPortal;
-var listFood;
-var world ;
+var listWall = [];
+var listIce = [];
+var listPortal = [];
+var listFood = [];
+var world = [];
 var worldHeight;
 var worldWidth;
 
@@ -414,7 +413,7 @@ function updateVariable(data){
   Snake = data.snake;
   listFood = data.food;
   updateWorld();
-
+  gameSpeed = data.delay;
   switch(data.startDirection){
     case "UP":
       direction = UP;
