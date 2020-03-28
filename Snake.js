@@ -156,7 +156,9 @@ function step(){
     //space isn't empty yet and we need to keep it until we checked if food is eaten.
     if(positionType==FOOD){ //check for food first
       audioEat.play();//play sound
-      gameSpeed = Math.round(gameSpeed/0.9);
+      gameSpeed = Math.round(gameSpeed*0.975);
+      clearInterval(loop);
+      loop = setInterval(playGame, gameSpeed);
       score+=10;
       document.getElementById("score").textContent = score;//update score display
       //delete the eaten food from the list (there can be multiple food at once)
