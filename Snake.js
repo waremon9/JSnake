@@ -93,20 +93,14 @@ function newGame(){
 }
 
 function step(){
-  console.log("yalo");
   //main function of the game. advance the game step by step.
 
   //get future position of head and what it encounter
-
   let nextHeadPosition = Snake[Snake.length-1].slice();//actual, updated after switch
-  let actualPositionType = world[nextHeadPosition[1]][nextHeadPosition[0]];
-  console.log("new");
-  console.log(nextHeadPosition);
-
   //Set the new direction taken by the snake according to last key pressed
   //The snake cannot do 180° and will continue forward
   //it cannot change if on ice
-  if(actualPositionType != ICE && actualPositionType != PORTAL){
+  if(positionType != ICE && positionType != PORTAL){
     switch(key){
       case UP:
         if(direction!=DOWN) direction = UP;
@@ -124,10 +118,9 @@ function step(){
         break;
     }
   }
-  console.log(nextHeadPosition);
 
   //update the position of the head
-  if(actualPositionType == PORTAL){
+  if(positionType == PORTAL){
     if(listPortal[0][0] == nextHeadPosition[0] && listPortal[0][1] == nextHeadPosition[1] ){
       nextHeadPosition[0] = listPortal[1][0];
       nextHeadPosition[1] = listPortal[1][1];
@@ -151,7 +144,6 @@ function step(){
       break;
   }
   Snake.push(nextHeadPosition);
-  
 
   //offmap? (dead then)
   if(world[0].length<=nextHeadPosition[0] || nextHeadPosition[0]<0
@@ -159,10 +151,10 @@ function step(){
 
   //Then check collision with items on map
   if(!dead){
-    let nextPositionType = world[nextHeadPosition[1]][nextHeadPosition[0]];
+    positionType = world[nextHeadPosition[1]][nextHeadPosition[0]];
     //not a switch because we can't check all case at once since snake's butt's last
     //space isn't empty yet and we need to keep it until we checked if food is eaten.
-    if(nextPositionType==FOOD){ //check for food first
+    if(positionType==FOOD){ //check for food first
       score+=10;
       document.getElementById("score").textContent = score;//update score display
       //delete the eaten food from the list (there can be multiple food at once)
@@ -179,7 +171,7 @@ function step(){
       //delete current butt
       var xy = Snake.shift();
     }
-    if(nextPositionType==WALL || nextPositionType==SNAKE_BODY){//then check for wall or body part
+    if(positionType==WALL || positionType==SNAKE_BODY){//then check for wall or body part
       if(!(nextHeadPosition[0]==xy[0] && nextHeadPosition[1]==xy[1])){//except for the very last part. it move at the same time so they don't collide
         dead = true;
       }
@@ -240,7 +232,7 @@ var listFood = [];
 var world = [];
 var worldHeight;
 var worldWidth;
-var headSpaceType;
+var positionType;
 
 // Define the space state
 var EMPTY = 0;
