@@ -155,6 +155,7 @@ function step(){
     //not a switch because we can't check all case at once since snake's butt's last
     //space isn't empty yet and we need to keep it until we checked if food is eaten.
     if(positionType==FOOD){ //check for food first
+      audioEat.play();//play sound
       score+=10;
       document.getElementById("score").textContent = score;//update score display
       //delete the eaten food from the list (there can be multiple food at once)
@@ -208,7 +209,6 @@ function newApple(){
   let min=0; 
   let max=possibleSpace.length-1;  
   let random = Math.round(Math.random() * (+max - +min) + +min);
-  Math.round
   //add it to the list
   let foodSpace = possibleSpace[random];
   listFood.push([foodSpace[0],foodSpace[1]]);
@@ -233,6 +233,9 @@ var world = [];
 var worldHeight;
 var worldWidth;
 var positionType;
+
+//sounds variables
+var audioEat = new Audio("yoshi-tongue.mp3");
 
 // Define the space state
 var EMPTY = 0;
