@@ -165,6 +165,7 @@ function step(){
       let i = 0;
       listFood.forEach(element => {
         if(element[0] == nextHeadPosition[0] && element[1] == nextHeadPosition[1]) index = i;
+        i++;
       });
       if (index > -1) {
         listFood.splice(index, 1);
