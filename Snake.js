@@ -1,4 +1,4 @@
-var nbLevel = 1; //used only for the comboBox level, up here for easy access
+var nbLevel = 5; //used only for the comboBox level, up here for easy access
 var selectedLevel; //keep in memory the selected level in case of restart
 
 function loadMenu(){
