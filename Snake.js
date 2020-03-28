@@ -93,12 +93,15 @@ function newGame(){
 }
 
 function step(){
+  console.log("yalo");
   //main function of the game. advance the game step by step.
 
   //get future position of head and what it encounter
 
   let nextHeadPosition = Snake[Snake.length-1].slice();//actual, updated after switch
   let actualPositionType = world[nextHeadPosition[1]][nextHeadPosition[0]];
+  console.log("new");
+  console.log(nextHeadPosition);
 
   //Set the new direction taken by the snake according to last key pressed
   //The snake cannot do 180° and will continue forward
@@ -121,6 +124,7 @@ function step(){
         break;
     }
   }
+  console.log(nextHeadPosition);
 
   //update the position of the head
   if(actualPositionType == PORTAL){
@@ -170,22 +174,20 @@ function step(){
         listFood.splice(index, 1);
       }
       newApple();
+      var xy = [-1,-1];
     }else{
-      //delete current butt and update world
+      //delete current butt
       var xy = Snake.shift();
     }
-    if(nextPositionType==WALL){ //then check for wall
-      dead=true;
+    if(nextPositionType==WALL || nextPositionType==SNAKE_BODY){//then check for wall or body part
+      if(!(nextHeadPosition[0]==xy[0] && nextHeadPosition[1]==xy[1])){//except for the very last part. it move at the same time so they don't collide
+        dead = true;
+      }
     }
-    Snake.forEach(bodyPart => { //or body part
-      if (Snake[Snake.length-1] != bodyPart){  //exclude the head 
-        if (bodyPart[0] == nextHeadPosition[0] && bodyPart[1] == nextHeadPosition[1]) dead = true;
-        //parceque bodyPart == nextHeadPosition ca marche pas, c'est pas le même tableau
-      }   
-    });
+    
   }
 
-  //update world
+  //update the world
   updateWorld();
 
   //draw the new state
@@ -238,6 +240,7 @@ var listFood = [];
 var world = [];
 var worldHeight;
 var worldWidth;
+var headSpaceType;
 
 // Define the space state
 var EMPTY = 0;
@@ -391,13 +394,13 @@ function updateWorld(){
     let line = [];
     for(var x = 0; x<worldWidth; x++){
       if(listWall.some(e => e[0]==x && e[1]==y)) line.push(WALL);
-      else if(listIce.some(e => e[0]==x && e[1]==y)) line.push(ICE);
       else if(listPortal.some(e => e[0]==x && e[1]==y)) line.push(PORTAL);
       else if(listFood.some(e => e[0]==x && e[1]==y)) line.push(FOOD);
       else if(Snake.some(e => e[0]==x && e[1]==y)){
         if(Snake[Snake.length-1][0] == x && Snake[Snake.length-1][1] == y) line.push(SNAKE_HEAD);
         else line.push(SNAKE_BODY);
       }
+      else if(listIce.some(e => e[0]==x && e[1]==y)) line.push(ICE);
       else line.push(EMPTY);
     }
     world.push(line);
