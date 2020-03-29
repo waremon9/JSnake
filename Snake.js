@@ -1,11 +1,27 @@
 var nbLevel = 5; //used only for the comboBox level, up here for easy access
 var selectedLevel; //keep in memory the selected level in case of restart
 
+function loadButton(){
+  //Creates the start button
+
+  //Delete what was there before
+  document.getElementById("button").textContent = "";
+
+  //Add button
+  let el = document.createElement("div");
+  el.setAttribute("id", "js-Button");
+  let button = "<a href='#' id='open'><span></span><span></span><span></span><span></span>Start playing</a>";
+  el.innerHTML = button;
+  document.getElementById("button").appendChild(el);
+  document.getElementById("open").addEventListener('click', loadMenu);
+}
+
 function loadMenu(){
   //create the whole menu
 
 
   //delete what was here before
+  document.getElementById("button").textContent = "";
   document.getElementById("game").textContent = "";
   document.getElementById("menu").textContent = "";
 
@@ -34,7 +50,7 @@ function loadMenu(){
 }
 
 // wait for window to load
-window.addEventListener("load", loadMenu);
+window.addEventListener("load", loadButton);
 
 //play menu music and delete event Listener so it work oly the first time.
 //here to avoid : Uncaught (in promise) DOMException: play() failed because the

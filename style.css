@@ -6,11 +6,125 @@ body{
 	display:flex;
 }
 
+a{
+	background: coral;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	font-family: arial;
+	font-size: 30px;
+	letter-spacing: 2px;
+	text-transform: uppercase;
+	text-decoration: none;
+	padding: 30px 60px;
+	box-shadow: 0 20px 50px rgba(0,0,0,0.5);
+	color: #fff;
+	overflow: hidden;
+	font-weight: bold;
+	transition: filter 0.5s;
+	transition: font-size 1s;
+}
+
+a::before{
+	content: '';
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 50%;
+	height: 100%;
+	background: rgba(255,255,255,0.2);
+}
+
+a:hover{
+	filter: drop-shadow(0px 0px 50px);
+	font-size: 70px;
+}
+
+ #open span:nth-child(1){
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 2px;
+	width: 100%;
+	background: linear-gradient(to right, #fff900, #1799f1);
+	animation: animate-top 2s linear infinite;
+}
+
+#open span:nth-child(2){
+	position: absolute;
+	top: 0;
+	right: 0;
+	height: 100%;
+	width: 2px;
+	background: linear-gradient(to right, #fff900, #1799f1);
+	animation: animate-right 2s linear infinite;
+	animation-delay: 1s;
+}
+
+#open span:nth-child(3){
+	position: absolute;
+	bottom: 0;
+	right: 0;
+	height: 2px;
+	width: 100%;
+	background: linear-gradient(to right, #fff900, #1799f1);
+	animation: animate-bottom 2s linear infinite;
+}
+
+#open span:nth-child(4){
+	position: absolute;
+	top: 0;
+	left: 0;
+	height: 100%;
+	width: 2px;
+	background: linear-gradient(to right, #fff900, #1799f1);
+	animation: animate-left 2s linear infinite;
+	animation-delay: 1s;
+}
+
+@keyframes animate-top{
+	0%{
+		transform: translateX(-100%);
+	}
+	100%{
+		transform: translateX(100%);
+	}
+}
+@keyframes animate-right{
+	0%{
+		transform: translateY(-100%);
+	}
+	100%{
+		transform: translateY(100%);
+	}
+}
+@keyframes animate-bottom{
+	0%{
+		transform: translateX(100%);
+	}
+	100%{
+		transform: translateX(-100%);
+	}
+}
+@keyframes animate-left{
+	0%{
+		transform: translateY(100%);
+	}
+	100%{
+		transform: translateY(-100%);
+	}
+}
+
+h1{
+	text-transform: uppercase;
+}
+
 #js-Menu{
 	background: rgba(255,255,255,90%);
 	border-radius: 0px 50px;	
-	padding: 69px;
-	border: 3px solid green;
+	padding: 69px 50px;
+	border: 3px solid coral;
 	position: absolute;
 	top: 50%;
 	left: 50%;
@@ -65,7 +179,7 @@ select{
 	transform: scale(1.5);
 	cursor: pointer;
 	color: white;
-	background: green;
+	background: coral;
 }
 
 #score, #score2{
@@ -88,7 +202,7 @@ select{
 	display: inline-block;
 	padding: 25px;
 	border: none;
-	background: pink;
+	background: coral;
 	font-size: 18px;
 	font-weight: bold;
 	border-radius: 0px 50px;
