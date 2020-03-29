@@ -26,13 +26,25 @@ function loadMenu(){
     .addEventListener('click', startclicked);
   
   //Play the music
-  musicGame.pause();
-  musicMenu.currentTime = 0;
-  musicMenu.play();
+  if (!firstLoad){
+    musicGame.pause();
+    musicMenu.currentTime = 0;
+    musicMenu.play();
+  }
 }
 
 // wait for window to load
 window.addEventListener("load", loadMenu);
+
+//play menu music and delete event Listener so it work oly the first time.
+//here to avoid : Uncaught (in promise) DOMException: play() failed because the
+// user didn't interact with the document first.
+var playMenu = function(){
+  musicMenu.play();
+  document.removeEventListener('mousedown', playMenu);
+  firstLoad = false;
+}
+document.addEventListener('mousedown',playMenu);
 
 //catch correct input
 document.addEventListener('keydown', function(event) {
@@ -230,6 +242,7 @@ function newApple(){
 }
 
 //Some usefull variable
+var firstLoad = true;
 var key;
 var direction;
 var score = 0;
