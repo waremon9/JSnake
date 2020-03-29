@@ -4,6 +4,7 @@ var selectedLevel; //keep in memory the selected level in case of restart
 function loadMenu(){
   //create the whole menu
 
+
   //delete what was here before
   document.getElementById("game").textContent = "";
   document.getElementById("menu").textContent = "";
@@ -23,6 +24,11 @@ function loadMenu(){
   document.getElementById("menu").appendChild(el);
   document.getElementById("start")
     .addEventListener('click', startclicked);
+  
+  //Play the music
+  musicGame.pause();
+  musicMenu.currentTime = 0;
+  musicMenu.play();
 }
 
 // wait for window to load
@@ -66,6 +72,11 @@ function playGame(){
 }
 
 function newGame(){
+  //music
+  musicMenu.pause();
+  musicGame.currentTime = 0;
+  musicGame.play();
+
   dead = false; //not dead when starting
   // Delete canvas from last game if exist
   let oldCan = document.getElementById("myCanvas");
@@ -238,8 +249,13 @@ var worldHeight;
 var worldWidth;
 var positionType;
 
-//sounds variables
-var audioEat = new Audio("yoshi-tongue.mp3");
+//sounds and music variables
+var audioEat = new Audio("SFX/yoshi-tongue.mp3");
+var musicMenu = new Audio("SFX/StageSelect.mp3");
+musicMenu.loop = true;
+var musicGame = new Audio("SFX/GamePlay.mp3");
+musicGame.loop = true;
+
 
 // Define the space state
 var EMPTY = 0;
