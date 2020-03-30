@@ -189,10 +189,8 @@ function step(){
       score+=10;
       document.getElementById("score").textContent = score;//update score display
       //delete the eaten food from the list (there can be multiple food at once)
-      let i = 0;
-      listFood.forEach(element => {
+      listFood.forEach((element, i) => {
         if(element[0] == nextHeadPosition[0] && element[1] == nextHeadPosition[1]) index = i;
-        i++;
       });
       if (index > -1) {
         listFood.splice(index, 1);
@@ -307,7 +305,7 @@ var RED = "#FF0000";
 var GREEN = "#00FF00";
 var DARK_GREEN = "#00AA00";
 var BROWN = "#582900";
-var LIGHT_GREY = "rgba(200, 200, 200, 0.5)";
+var LIGHT_GREY = "rgba(200, 200, 200, 0.3)";
 var LIGHT_BLUE = "#AAAAFF";
 var DARK_BLUE = "#2000AA";
 var PINK = "#FE7E9C";
@@ -360,35 +358,36 @@ function drawBoard(){
   canHeight = canvas.height;
   canWidth = canvas.width;
 
-  let doIt = true;
   //coloring cells acording to what they contain
-  for(let y =0; y<worldHeight; y++){ //for every line
-    for(let x =0; x<worldWidth; x++){ //for every cells in the line
-      doIt = true;
+  for(let y = 0; y<worldHeight; y++){ //for every line
+    for(let x = 0; x<worldWidth; x++){ //for every cells in the line
       ctx.fillStyle = LIGHT_GREY;
       ctx.fillRect(x*spaceSize, y*spaceSize, 
         spaceSize, spaceSize)
-      switch(world[y][x]){ //set the color
+      switch(world[y][x]){ //set the color or draw the image
         case EMPTY:
           ctx.fillStyle = LIGHT_GREY;
+          ctx.fillRect(x*spaceSize, y*spaceSize, 
+            spaceSize, spaceSize)
           break;
         case SNAKE_BODY:
           ctx.fillStyle = PINK;
+          ctx.fillRect(x*spaceSize, y*spaceSize, 
+            spaceSize, spaceSize)
           break;
         case SNAKE_HEAD:
           ctx.fillStyle = LIGHT_ORANGE;
+          ctx.fillRect(x*spaceSize, y*spaceSize, 
+            spaceSize, spaceSize)
           break;
         case FOOD:
           ctx.drawImage(imgApple,x*spaceSize,y*spaceSize)
-          doIt = false;
           break;
         case WALL:
           ctx.drawImage(imgWall,x*spaceSize,y*spaceSize)
-          doIt = false;
           break;
         case ICE:
           ctx.drawImage(imgIce,x*spaceSize,y*spaceSize)
-          doIt = false;
           break;
         case PORTAL:
           ctx.drawImage(imgPortal,x*spaceSize,y*spaceSize)
@@ -396,14 +395,10 @@ function drawBoard(){
           break;
         case GRASS:
           ctx.drawImage(imgGrass,x*spaceSize-3,y*spaceSize-3)
-          doIt = false;
           break;
         default:
           break;
       }
-      //fill the space with the color
-      if(doIt) ctx.fillRect(x*spaceSize, y*spaceSize, 
-                  spaceSize, spaceSize)
     }
   };
 
