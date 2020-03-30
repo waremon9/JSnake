@@ -42,25 +42,13 @@ function loadMenu(){
     .addEventListener('click', startclicked);
   
   //Play the music
-  if (!firstLoad){
-    musicGame.pause();
-    musicMenu.currentTime = 0;
-    musicMenu.play();
-  }
+  musicGame.pause();
+  musicMenu.currentTime = 0;
+  musicMenu.play();
 }
 
 // wait for window to load
 window.addEventListener("load", loadButton);
-
-//play menu music and delete event Listener so it work oly the first time.
-//here to avoid : Uncaught (in promise) DOMException: play() failed because the
-// user didn't interact with the document first.
-var playMenu = function(){
-  musicMenu.play();
-  document.removeEventListener('mousedown', playMenu);
-  firstLoad = false;
-}
-document.addEventListener('mousedown',playMenu);
 
 //catch correct input
 document.addEventListener('keydown', function(event) {
@@ -258,7 +246,6 @@ function newApple(){
 }
 
 //Some usefull variable
-var firstLoad = true;
 var key;
 var direction;
 var score = 0;
@@ -280,6 +267,7 @@ var positionType;
 
 //sounds and music variables
 var audioEat = new Audio("SFX/yoshi-tongue.mp3");
+var audioGameOver = new Audio("SFX/GameOver.mp3");
 var musicMenu = new Audio("SFX/StageSelect.mp3");
 musicMenu.loop = true;
 var musicGame = new Audio("SFX/GamePlay.mp3");
@@ -318,6 +306,9 @@ var LIGHT_ORANGE = "#FFA356";
 
 function gameOver(){
   //game-over screen
+
+  //sound
+  musicGame.pause();
 
   canvas = document.getElementById("myCanvas");
   ctx = canvas.getContext("2d");
