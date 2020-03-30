@@ -279,6 +279,8 @@ var imgWall = new Image();
 imgWall.src = 'Images/Wall.png';
 var imgGrass = new Image();
 imgGrass.src = 'Images/Grass.png';
+var imgIce = new Image();
+imgIce.src = 'Images/Ice.png';
 
 // Define the space state
 var EMPTY = 0;
@@ -385,7 +387,8 @@ function drawBoard(){
           doIt = false;
           break;
         case ICE:
-          ctx.fillStyle = LIGHT_BLUE;
+          ctx.drawImage(imgIce,x*spaceSize,y*spaceSize)
+          doIt = false;
           break;
         case PORTAL:
           ctx.drawImage(imgPortal,x*spaceSize,y*spaceSize)
