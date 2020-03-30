@@ -309,6 +309,7 @@ function gameOver(){
 
   //sound
   musicGame.pause();
+  audioGameOver.play();
 
   canvas = document.getElementById("myCanvas");
   ctx = canvas.getContext("2d");
