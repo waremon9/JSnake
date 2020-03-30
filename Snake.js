@@ -1,5 +1,76 @@
 var nbLevel = 6; //used only for the comboBox level, up here for easy access
 var selectedLevel; //keep in memory the selected level in case of restart
+//Some usefull variable
+var key;
+var direction;
+var score = 0;
+var UP = 0;
+var RIGHT = 1;
+var DOWN = 2;
+var LEFT = 3;
+var dead = false;
+var gameSpeed;
+var loop;
+var listWall = [];
+var listIce = [];
+var listGrass = [];
+var listPortal = [];
+var listFood = [];
+var world = [];
+var worldHeight;
+var worldWidth;
+var positionType;
+
+//sounds and music variables
+var audioEat = new Audio("SFX/yoshi-tongue.mp3");
+var audioGameOver = new Audio("SFX/GameOver.mp3");
+var musicMenu = new Audio("SFX/StageSelect.mp3");
+musicMenu.loop = true;
+var musicGame = new Audio("SFX/GamePlay.mp3");
+musicGame.loop = true;
+
+//image
+var imgApple = new Image();
+imgApple.src = 'Images/Apple.png';
+var imgPortal = new Image();
+imgPortal.src = 'Images/Portal.png';
+var imgWall = new Image();
+imgWall.src = 'Images/Wall.png';
+var imgGrass = new Image();
+imgGrass.src = 'Images/Grass.png';
+var imgIce = new Image();
+imgIce.src = 'Images/Ice.png';
+
+// Define the space state
+var EMPTY = 0;
+var SNAKE_BODY = 1;
+var SNAKE_HEAD = 2;
+var FOOD = 3;
+var WALL = 4;
+var ICE = 5;
+var PORTAL = 6;
+var GRASS = 7;
+
+// Array containing the actual state of the game. content added when JSON file is read.
+var world;
+
+// Array of the actual snake position from back to head
+var Snake = [[0,0],[1,0],[2,0]];
+
+// global size of each space
+spaceSize = 50;
+
+//define some color
+var BLACK = "#000000";
+var RED = "#FF0000";
+var GREEN = "#00FF00";
+var DARK_GREEN = "#00AA00";
+var BROWN = "#582900";
+var LIGHT_GREY = "rgba(200, 200, 200, 0.3)";
+var LIGHT_BLUE = "#AAAAFF";
+var DARK_BLUE = "#2000AA";
+var PINK = "#FE7E9C";
+var LIGHT_ORANGE = "#FFA356";
 
 function loadButton(){
   //Creates the start button
@@ -18,7 +89,6 @@ function loadButton(){
 
 function loadMenu(){
   //create the whole menu
-
 
   //delete what was here before
   document.getElementById("button").textContent = "";
@@ -40,7 +110,7 @@ function loadMenu(){
   document.getElementById("menu").appendChild(el);
   document.getElementById("start")
     .addEventListener('click', startclicked);
-  
+
   //Play the music
   musicGame.pause();
   musicMenu.currentTime = 0;
@@ -79,7 +149,27 @@ function startclicked(){
 
   //go get the data and use them before callin new game
   selectedLevel = levelNumber;
+  console.log(levelNumber);
   getJSONContentMap(levelNumber);
+}
+
+function getJSONContentMap(nb){
+  //Get the content of JSON file for map
+  var req = new XMLHttpRequest();
+  req.open("GET", "JSON/Map"+nb+".json");
+  req.onerror = function() {
+      console.log("Échec de chargement "+url);
+  };
+  req.onload = function() {
+      if (req.status === 200) {
+        var data = JSON.parse(req.responseText);
+        //use the data
+        updateVariable(data);
+      } else {
+        console.log("Erreur " + req.status);
+      }
+  };
+  req.send();
 }
 
 function playGame(){
@@ -206,7 +296,7 @@ function step(){
         dead = true;
       }
     }
-    
+
   }
 
   //update the world
@@ -231,85 +321,14 @@ function newApple(){
   }
 
   //choose a random one
-  let min=0; 
-  let max=possibleSpace.length-1;  
+  let min=0;
+  let max=possibleSpace.length-1;
   let random = Math.round(Math.random() * (+max - +min) + +min);
   //add it to the list
   let foodSpace = possibleSpace[random];
   listFood.push([foodSpace[0],foodSpace[1]]);
 }
 
-//Some usefull variable
-var key;
-var direction;
-var score = 0;
-var UP = 0;
-var RIGHT = 1;
-var DOWN = 2;
-var LEFT = 3;
-var dead = false;
-var gameSpeed;
-var loop;
-var listWall = [];
-var listIce = [];
-var listGrass = [];
-var listPortal = [];
-var listFood = [];
-var world = [];
-var worldHeight;
-var worldWidth;
-var positionType;
-
-//sounds and music variables
-var audioEat = new Audio("SFX/yoshi-tongue.mp3");
-var audioGameOver = new Audio("SFX/GameOver.mp3");
-var musicMenu = new Audio("SFX/StageSelect.mp3");
-musicMenu.loop = true;
-var musicGame = new Audio("SFX/GamePlay.mp3");
-musicGame.loop = true;
-
-//image
-var imgApple = new Image();
-imgApple.src = 'Images/Apple.png';
-var imgPortal = new Image();
-imgPortal.src = 'Images/Portal.png';
-var imgWall = new Image();
-imgWall.src = 'Images/Wall.png';
-var imgGrass = new Image();
-imgGrass.src = 'Images/Grass.png';
-var imgIce = new Image();
-imgIce.src = 'Images/Ice.png';
-
-// Define the space state
-var EMPTY = 0;
-var SNAKE_BODY = 1;
-var SNAKE_HEAD = 2;
-var FOOD = 3;
-var WALL = 4;
-var ICE = 5;
-var PORTAL = 6;
-var GRASS = 7;
-
-// Array containing the actual state of the game. content added when JSON file is read.
-var world;
-
-// Array of the actual snake position from back to head
-var Snake = [[0,0],[1,0],[2,0]];
-
-// global size of each space
-spaceSize = 50;
-
-//define some color
-var BLACK = "#000000";
-var RED = "#FF0000";
-var GREEN = "#00FF00";
-var DARK_GREEN = "#00AA00";
-var BROWN = "#582900";
-var LIGHT_GREY = "rgba(200, 200, 200, 0.3)";
-var LIGHT_BLUE = "#AAAAFF";
-var DARK_BLUE = "#2000AA";
-var PINK = "#FE7E9C";
-var LIGHT_ORANGE = "#FFA356";
 
 function gameOver(){
   //game-over screen
@@ -362,22 +381,22 @@ function drawBoard(){
   for(let y = 0; y<worldHeight; y++){ //for every line
     for(let x = 0; x<worldWidth; x++){ //for every cells in the line
       ctx.fillStyle = LIGHT_GREY;
-      ctx.fillRect(x*spaceSize, y*spaceSize, 
+      ctx.fillRect(x*spaceSize, y*spaceSize,
         spaceSize, spaceSize)
       switch(world[y][x]){ //set the color or draw the image
         case EMPTY:
           ctx.fillStyle = LIGHT_GREY;
-          ctx.fillRect(x*spaceSize, y*spaceSize, 
+          ctx.fillRect(x*spaceSize, y*spaceSize,
             spaceSize, spaceSize)
           break;
         case SNAKE_BODY:
           ctx.fillStyle = PINK;
-          ctx.fillRect(x*spaceSize, y*spaceSize, 
+          ctx.fillRect(x*spaceSize, y*spaceSize,
             spaceSize, spaceSize)
           break;
         case SNAKE_HEAD:
           ctx.fillStyle = LIGHT_ORANGE;
-          ctx.fillRect(x*spaceSize, y*spaceSize, 
+          ctx.fillRect(x*spaceSize, y*spaceSize,
             spaceSize, spaceSize)
           break;
         case FOOD:
@@ -416,45 +435,6 @@ function drawBoard(){
   ctx.stroke();
 }
 
-function getJSONContentMap(nb){
-  //Get the content of JSON file for map
-  var req = new XMLHttpRequest();
-  req.open("GET", "JSON/Map"+nb+".json");
-  req.onerror = function() {
-      console.log("Échec de chargement "+url);
-  };
-  req.onload = function() {
-      if (req.status === 200) {
-        var data = JSON.parse(req.responseText);
-        //use the data 
-        updateVariable(data);
-      } else {
-        console.log("Erreur " + req.status);
-      }
-  };
-  req.send();
-}
-
-function updateWorld(){
-  world = [];
-  for(var y = 0; y<worldHeight; y++){
-    let line = [];
-    for(var x = 0; x<worldWidth; x++){
-      if(listWall.some(e => e[0]==x && e[1]==y)) line.push(WALL);
-      else if(listPortal.some(e => e[0]==x && e[1]==y)) line.push(PORTAL);
-      else if(listGrass.some(e => e[0]==x && e[1]==y)) line.push(GRASS);
-      else if(listFood.some(e => e[0]==x && e[1]==y)) line.push(FOOD);
-      else if(Snake.some(e => e[0]==x && e[1]==y)){
-        if(Snake[Snake.length-1][0] == x && Snake[Snake.length-1][1] == y) line.push(SNAKE_HEAD);
-        else line.push(SNAKE_BODY);
-      }
-      else if(listIce.some(e => e[0]==x && e[1]==y)) line.push(ICE);
-      else line.push(EMPTY);
-    }
-    world.push(line);
-  }
-}
-
 function updateVariable(data){
   worldWidth = data.dimensions[0];
   worldHeight = data.dimensions[1];
@@ -484,4 +464,24 @@ function updateVariable(data){
       break;
   }
   newGame();
+}
+
+function updateWorld(){
+  world = [];
+  for(var y = 0; y<worldHeight; y++){
+    let line = [];
+    for(var x = 0; x<worldWidth; x++){
+      if(listWall.some(e => e[0]==x && e[1]==y)) line.push(WALL);
+      else if(listPortal.some(e => e[0]==x && e[1]==y)) line.push(PORTAL);
+      else if(listGrass.some(e => e[0]==x && e[1]==y)) line.push(GRASS);
+      else if(listFood.some(e => e[0]==x && e[1]==y)) line.push(FOOD);
+      else if(Snake.some(e => e[0]==x && e[1]==y)){
+        if(Snake[Snake.length-1][0] == x && Snake[Snake.length-1][1] == y) line.push(SNAKE_HEAD);
+        else line.push(SNAKE_BODY);
+      }
+      else if(listIce.some(e => e[0]==x && e[1]==y)) line.push(ICE);
+      else line.push(EMPTY);
+    }
+    world.push(line);
+  }
 }

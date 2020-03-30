@@ -6,6 +6,11 @@ body{
 	display:flex;
 }
 
+#truc{
+	display:flex;
+	flex-wrap:wrap;
+}
+
 a{
 	background: coral;
 	position: absolute;
@@ -118,7 +123,7 @@ a:hover{
 
 #js-Menu{
 	background: rgba(255,255,255,90%);
-	border-radius: 0px 50px;	
+	border-radius: 0px 50px;
 	padding: 69px;
 	border: 3px solid coral;
 	position: absolute;
@@ -127,12 +132,12 @@ a:hover{
 	transform: translate(-50%, -50%);
 	display:block;
 	align-items:center;
-	justify-content: center;	
+	justify-content: center;
 }
 
 #js-Canvas{
 	background: rgba(255,255,255,90%);
-	border-radius: 0px 50px;	
+	border-radius: 0px 50px;
 	padding: 50px;
 	border: 3px solid pink;
 	position: absolute;
@@ -143,7 +148,7 @@ a:hover{
 	align-items:center;
 	justify-content: center;
 }
-	
+
 #start{
 	background: lightgrey;
 	position: relative;
@@ -158,6 +163,13 @@ a:hover{
 	transition: 0.6s;
 }
 
+#start:hover{
+	transform: scale(1.5);
+	cursor: pointer;
+	color: white;
+	background: coral;
+}
+
 #choice{
 	font-size: 20px;
 	text-align: center;
@@ -169,13 +181,6 @@ select{
 	padding: 10px;
 	font-size: : 16px;
 	font-weight: bold;
-}
-
-#start:hover{
-	transform: scale(1.5);
-	cursor: pointer;
-	color: white;
-	background: coral;
 }
 
 #score, #score2{
@@ -210,9 +215,4 @@ select{
 	cursor: pointer;
 	color: white;
 	filter: grayscale(0%);
-}
-
-#truc{
-	display:flex;
-	flex-wrap:wrap;
 }
