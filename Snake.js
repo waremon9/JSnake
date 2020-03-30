@@ -1,4 +1,4 @@
-var nbLevel = 5; //used only for the comboBox level, up here for easy access
+var nbLevel = 6; //used only for the comboBox level, up here for easy access
 var selectedLevel; //keep in memory the selected level in case of restart
 
 function loadButton(){
@@ -254,6 +254,7 @@ var gameSpeed;
 var loop;
 var listWall = [];
 var listIce = [];
+var listGrass = [];
 var listPortal = [];
 var listFood = [];
 var world = [];
@@ -276,6 +277,8 @@ var imgPortal = new Image();
 imgPortal.src = 'Images/Portal.png';
 var imgWall = new Image();
 imgWall.src = 'Images/Wall.png';
+var imgGrass = new Image();
+imgGrass.src = 'Images/Grass.png';
 
 // Define the space state
 var EMPTY = 0;
@@ -285,8 +288,9 @@ var FOOD = 3;
 var WALL = 4;
 var ICE = 5;
 var PORTAL = 6;
+var GRASS = 7;
 
-// Array containing the actual state of the game. content added when JSON file is read. (see line ~330)
+// Array containing the actual state of the game. content added when JSON file is read.
 var world;
 
 // Array of the actual snake position from back to head
@@ -387,6 +391,10 @@ function drawBoard(){
           ctx.drawImage(imgPortal,x*spaceSize,y*spaceSize)
           doIt = false;
           break;
+        case GRASS:
+          ctx.drawImage(imgGrass,x*spaceSize-3,y*spaceSize-3)
+          doIt = false;
+          break;
         default:
           break;
       }
@@ -436,6 +444,7 @@ function updateWorld(){
     for(var x = 0; x<worldWidth; x++){
       if(listWall.some(e => e[0]==x && e[1]==y)) line.push(WALL);
       else if(listPortal.some(e => e[0]==x && e[1]==y)) line.push(PORTAL);
+      else if(listGrass.some(e => e[0]==x && e[1]==y)) line.push(GRASS);
       else if(listFood.some(e => e[0]==x && e[1]==y)) line.push(FOOD);
       else if(Snake.some(e => e[0]==x && e[1]==y)){
         if(Snake[Snake.length-1][0] == x && Snake[Snake.length-1][1] == y) line.push(SNAKE_HEAD);
@@ -454,6 +463,7 @@ function updateVariable(data){
   listWall = data.walls;
   listIce = data.ice;
   listPortal = data.portal;
+  listGrass = data.grass;
   Snake = data.snake;
   listFood = data.food;
   updateWorld();

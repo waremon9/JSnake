@@ -4,6 +4,7 @@
     "walls": [],
     "ice":[],
     "portal":[],
+    "grass":[],
     "food": [
         [2,2]
     ],
