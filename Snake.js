@@ -1,25 +1,38 @@
-var nbLevel = 6; //used only for the comboBox level, up here for easy access
-var selectedLevel; //keep in memory the selected level in case of restart
 //Some usefull variable
-var key;
-var direction;
-var score = 0;
+var nbLevel = 6; //The number of level for the combobox
+var selectedLevel; //keep in memory the selected level in case of restart
+var key; // last key key pressed by user
+var direction; //direction the snake is facing
+var score = 0; //user score
+//variables for direction
 var UP = 0;
 var RIGHT = 1;
 var DOWN = 2;
 var LEFT = 3;
-var dead = false;
-var gameSpeed;
-var loop;
+var dead = false;//if the player is dead or alive
+var gameSpeed; //interval in ms for step()
+var loop; //value from setInterval(step)
+//list for the element in each level
 var listWall = [];
 var listIce = [];
 var listGrass = [];
 var listPortal = [];
 var listFood = [];
-var world = [];
+var Snake = [[0,0],[1,0],[2,0]]; // Array of the actual snake position from back to head
+var world = []; //state of the game. and the size
 var worldHeight;
 var worldWidth;
-var positionType;
+spaceSize = 50;//size of each cells
+var positionType;//type of cells the snake head is on
+// Define the space variable
+var EMPTY = 0;
+var SNAKE_BODY = 1;
+var SNAKE_HEAD = 2;
+var FOOD = 3;
+var WALL = 4;
+var ICE = 5;
+var PORTAL = 6;
+var GRASS = 7;
 
 //sounds and music variables
 var audioEat = new Audio("SFX/yoshi-tongue.mp3");
@@ -40,25 +53,6 @@ var imgGrass = new Image();
 imgGrass.src = 'Images/Grass.png';
 var imgIce = new Image();
 imgIce.src = 'Images/Ice.png';
-
-// Define the space state
-var EMPTY = 0;
-var SNAKE_BODY = 1;
-var SNAKE_HEAD = 2;
-var FOOD = 3;
-var WALL = 4;
-var ICE = 5;
-var PORTAL = 6;
-var GRASS = 7;
-
-// Array containing the actual state of the game. content added when JSON file is read.
-var world;
-
-// Array of the actual snake position from back to head
-var Snake = [[0,0],[1,0],[2,0]];
-
-// global size of each space
-spaceSize = 50;
 
 //define some color
 var BLACK = "#000000";
