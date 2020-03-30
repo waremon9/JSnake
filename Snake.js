@@ -223,19 +223,15 @@ function newApple(){
   //make a new apple appear on the map
   //We get all the empty space to not spawn the apple in a wall or in the snake
   let possibleSpace = [];
-  let x = 0;
-  let y = 0;
-  world.forEach(line => {
-    line.forEach(space => {
-      if(space == EMPTY){
-        //check if space not occupied by snake
-        if(!Snake.some(e => e[0]==x && e[1]==y)) possibleSpace.push([x,y]);
+
+  for(let y = 0; y<worldHeight; y++){
+    for(let x = 0; x<worldWidth; x++){
+      if(world[y][x] == EMPTY){
+        possibleSpace.push([x,y]);
       }
-      x++;
-    })
-    y++;
-    x=0;
-  });
+    }
+  }
+
   //choose a random one
   let min=0; 
   let max=possibleSpace.length-1;  
@@ -273,6 +269,9 @@ musicMenu.loop = true;
 var musicGame = new Audio("SFX/GamePlay.mp3");
 musicGame.loop = true;
 
+//image
+var imgApple = new Image();
+imgApple.src = 'Apple.png';
 
 // Define the space state
 var EMPTY = 0;
@@ -351,13 +350,12 @@ function drawBoard(){
   canHeight = canvas.height;
   canWidth = canvas.width;
 
-  //coloring space acording to what they contain
-  var x = 0;
-  var y = 0;
-  world.forEach(line => { //for every line
-
-    line.forEach(space => { //for every space in the line
-      switch(space){ //set the color
+  let doIt = true;
+  //coloring cells acording to what they contain
+  for(let y =0; y<worldHeight; y++){ //for every line
+    for(let x =0; x<worldWidth; x++){ //for every cells in the line
+        doIt = true;
+      switch(world[y][x]){ //set the color
         case EMPTY:
           ctx.fillStyle = LIGHT_GREY;
           break;
@@ -368,7 +366,11 @@ function drawBoard(){
           ctx.fillStyle = LIGHT_ORANGE;
           break;
         case FOOD:
-          ctx.fillStyle = RED;
+          ctx.fillStyle = LIGHT_GREY;
+          ctx.fillRect(x*spaceSize, y*spaceSize, 
+            spaceSize, spaceSize)
+          ctx.drawImage(imgApple,x*spaceSize,y*spaceSize)
+          doIt = false;
           break;
         case WALL:
           ctx.fillStyle = BROWN;
@@ -383,13 +385,10 @@ function drawBoard(){
           break;
       }
       //fill the space with the color
-      ctx.fillRect(x*spaceSize, y*spaceSize, 
+      if(doIt) ctx.fillRect(x*spaceSize, y*spaceSize, 
                   spaceSize, spaceSize)
-      x++;
-    })
-    x=0;
-    y++;
-  });
+    }
+  };
 
   //draw the grid
   ctx.beginPath();
