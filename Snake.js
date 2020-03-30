@@ -108,8 +108,8 @@ function newGame(){
   let height = world.length*spaceSize;
   let can =  "<canvas id='myCanvas' width='"+ width
     + "' height='"+ height +"'></canvas>";
-  let score = "<p id='score2'>Score: <span id='score'>0</span></p>";
-  el.innerHTML = score + can;
+  let scoreAffichage = "<p id='score2'>Score: <span id='score'>0</span></p>";
+  el.innerHTML = scoreAffichage + can;
   document.getElementById("game").appendChild(el);
   //Reset snake
   score = 0;
