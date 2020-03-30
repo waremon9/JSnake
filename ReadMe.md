@@ -7,7 +7,7 @@ You can do that easily by typing a command in a terminal :
 - On windows : `python -m http.server`
 - On linux : `python3.8 -m http.server`
 
-Then entering `http://localhost:8000/` and choosing the `Snake.html` file.
+Then entering `http://localhost:8000/` in a browser and choosing the `Snake.html` file.
 Then just click on the **Start playing** button to get to the level selection menu.
 Select the wanted level and press the **start new game** button.
 If you loose, you can choose between 2 buttons :
