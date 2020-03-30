@@ -1,9 +1,11 @@
 //Some usefull variable
+
 var nbLevel = 6; //The number of level for the combobox
 var selectedLevel; //keep in memory the selected level in case of restart
 var key; // last key key pressed by user
 var direction; //direction the snake is facing
 var score = 0; //user score
+
 //variables for direction
 var UP = 0;
 var RIGHT = 1;
@@ -12,6 +14,7 @@ var LEFT = 3;
 var dead = false;//if the player is dead or alive
 var gameSpeed; //interval in ms for step()
 var loop; //value from setInterval(step)
+
 //list for the element in each level
 var listWall = [];
 var listIce = [];
@@ -24,6 +27,7 @@ var worldHeight;
 var worldWidth;
 spaceSize = 50;//size of each cells
 var positionType;//type of cells the snake head is on
+
 // Define the space variable
 var EMPTY = 0;
 var SNAKE_BODY = 1;
@@ -33,6 +37,8 @@ var WALL = 4;
 var ICE = 5;
 var PORTAL = 6;
 var GRASS = 7;
+var ICE_FOOD = 8;
+var GRASS_FOOD = 9;
 
 //sounds and music variables
 var audioEat = new Audio("SFX/yoshi-tongue.mp3");
@@ -54,7 +60,7 @@ imgGrass.src = 'Images/Grass.png';
 var imgIce = new Image();
 imgIce.src = 'Images/Ice.png';
 
-//define some color
+//define some color (with the image, some of them might be unused)
 var BLACK = "#000000";
 var RED = "#FF0000";
 var GREEN = "#00FF00";
@@ -65,6 +71,11 @@ var LIGHT_BLUE = "#AAAAFF";
 var DARK_BLUE = "#2000AA";
 var PINK = "#FE7E9C";
 var LIGHT_ORANGE = "#FFA356";
+
+
+// wait for window to load
+window.addEventListener("load", loadButton);
+
 
 function loadButton(){
   //Creates the start button
@@ -80,6 +91,7 @@ function loadButton(){
   document.getElementById("button").appendChild(el);
   document.getElementById("open").addEventListener('click', loadMenu);
 }
+
 
 function loadMenu(){
   //create the whole menu
@@ -111,8 +123,6 @@ function loadMenu(){
   musicMenu.play();
 }
 
-// wait for window to load
-window.addEventListener("load", loadButton);
 
 //catch correct input
 document.addEventListener('keydown', function(event) {
@@ -130,6 +140,7 @@ document.addEventListener('keydown', function(event) {
   }
 });
 
+
 function startclicked(){
   //get level number
   let levelNumber;
@@ -143,9 +154,9 @@ function startclicked(){
 
   //go get the data and use them before callin new game
   selectedLevel = levelNumber;
-  console.log(levelNumber);
   getJSONContentMap(levelNumber);
 }
+
 
 function getJSONContentMap(nb){
   //Get the content of JSON file for map
@@ -166,10 +177,12 @@ function getJSONContentMap(nb){
   req.send();
 }
 
+
 function playGame(){
   if(!dead) step();
   else clearInterval(loop);
 }
+
 
 function newGame(){
   //music
@@ -202,6 +215,7 @@ function newGame(){
   drawBoard();
   loop = setInterval(playGame, gameSpeed);
 }
+
 
 function step(){
   //main function of the game. advance the game step by step.
@@ -265,7 +279,7 @@ function step(){
     positionType = world[nextHeadPosition[1]][nextHeadPosition[0]];
     //not a switch because we can't check all case at once since snake's butt's last
     //space isn't empty yet and we need to keep it until we checked if food is eaten.
-    if(positionType==FOOD){ //check for food first
+    if(positionType==FOOD || positionType==GRASS_FOOD || positionType==ICE_FOOD){ //check for food first
       audioEat.play();//play sound
       gameSpeed = Math.round(gameSpeed*0.975);
       clearInterval(loop);
@@ -274,6 +288,7 @@ function step(){
       document.getElementById("score").textContent = score;//update score display
       //delete the eaten food from the list (there can be multiple food at once)
       listFood.forEach((element, i) => {
+        console.log(element)
         if(element[0] == nextHeadPosition[0] && element[1] == nextHeadPosition[1]) index = i;
       });
       if (index > -1) {
@@ -301,6 +316,7 @@ function step(){
   else gameOver();
 }
 
+
 function newApple(){
   //make a new apple appear on the map
   //We get all the empty space to not spawn the apple in a wall or in the snake
@@ -308,7 +324,7 @@ function newApple(){
 
   for(let y = 0; y<worldHeight; y++){
     for(let x = 0; x<worldWidth; x++){
-      if(world[y][x] == EMPTY){
+      if(world[y][x] == EMPTY || world[y][x] == ICE || world[y][x] == GRASS){
         possibleSpace.push([x,y]);
       }
     }
@@ -320,7 +336,8 @@ function newApple(){
   let random = Math.round(Math.random() * (+max - +min) + +min);
   //add it to the list
   let foodSpace = possibleSpace[random];
-  listFood.push([foodSpace[0],foodSpace[1]]);
+  console.log([foodSpace[0], foodSpace[1], world[foodSpace[1]][foodSpace[0]] ])
+  listFood.push([foodSpace[0], foodSpace[1], world[foodSpace[1]][foodSpace[0]] ]);//x, y, type of cell
 }
 
 
@@ -357,6 +374,7 @@ function gameOver(){
   document.getElementById("againBut")
     .addEventListener('click', startclicked);
 }
+
 
 function drawBoard(){
   // Draw the whole game on the canvas
@@ -396,6 +414,14 @@ function drawBoard(){
         case FOOD:
           ctx.drawImage(imgApple,x*spaceSize,y*spaceSize)
           break;
+        case GRASS_FOOD:
+          ctx.drawImage(imgGrass,x*spaceSize-3,y*spaceSize-3)
+          ctx.drawImage(imgApple,x*spaceSize,y*spaceSize)
+          break;
+        case ICE_FOOD:
+          ctx.drawImage(imgIce,x*spaceSize,y*spaceSize)
+          ctx.drawImage(imgApple,x*spaceSize,y*spaceSize)
+          break;
         case WALL:
           ctx.drawImage(imgWall,x*spaceSize,y*spaceSize)
           break;
@@ -404,7 +430,6 @@ function drawBoard(){
           break;
         case PORTAL:
           ctx.drawImage(imgPortal,x*spaceSize,y*spaceSize)
-          doIt = false;
           break;
         case GRASS:
           ctx.drawImage(imgGrass,x*spaceSize-3,y*spaceSize-3)
@@ -429,6 +454,7 @@ function drawBoard(){
   ctx.stroke();
 }
 
+
 function updateVariable(data){
   worldWidth = data.dimensions[0];
   worldHeight = data.dimensions[1];
@@ -437,7 +463,12 @@ function updateVariable(data){
   listPortal = data.portal;
   listGrass = data.grass;
   Snake = data.snake;
-  listFood = data.food;
+
+  listFood = [];
+  for(let i = 0; i<data.food.length; i++){
+    listFood.push([data.food[i][0], data.food[i][1], EMPTY])
+  }
+
   updateWorld();
   gameSpeed = data.delay;
   switch(data.startDirection){
@@ -460,6 +491,7 @@ function updateVariable(data){
   newGame();
 }
 
+
 function updateWorld(){
   world = [];
   for(var y = 0; y<worldHeight; y++){
@@ -467,8 +499,10 @@ function updateWorld(){
     for(var x = 0; x<worldWidth; x++){
       if(listWall.some(e => e[0]==x && e[1]==y)) line.push(WALL);
       else if(listPortal.some(e => e[0]==x && e[1]==y)) line.push(PORTAL);
+      else if(listFood.some(e => e[0]==x && e[1]==y && e[2]==EMPTY)) line.push(FOOD);
+      else if(listFood.some(e => e[0]==x && e[1]==y && e[2]==GRASS)) line.push(GRASS_FOOD);
+      else if(listFood.some(e => e[0]==x && e[1]==y && e[2]==ICE)) line.push(ICE_FOOD);
       else if(listGrass.some(e => e[0]==x && e[1]==y)) line.push(GRASS);
-      else if(listFood.some(e => e[0]==x && e[1]==y)) line.push(FOOD);
       else if(Snake.some(e => e[0]==x && e[1]==y)){
         if(Snake[Snake.length-1][0] == x && Snake[Snake.length-1][1] == y) line.push(SNAKE_HEAD);
         else line.push(SNAKE_BODY);
