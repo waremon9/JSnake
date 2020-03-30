@@ -271,7 +271,11 @@ musicGame.loop = true;
 
 //image
 var imgApple = new Image();
-imgApple.src = 'Apple.png';
+imgApple.src = 'Images/Apple.png';
+var imgPortal = new Image();
+imgPortal.src = 'Images/Portal.png';
+var imgWall = new Image();
+imgWall.src = 'Images/Wall.png';
 
 // Define the space state
 var EMPTY = 0;
@@ -354,7 +358,10 @@ function drawBoard(){
   //coloring cells acording to what they contain
   for(let y =0; y<worldHeight; y++){ //for every line
     for(let x =0; x<worldWidth; x++){ //for every cells in the line
-        doIt = true;
+      doIt = true;
+      ctx.fillStyle = LIGHT_GREY;
+      ctx.fillRect(x*spaceSize, y*spaceSize, 
+        spaceSize, spaceSize)
       switch(world[y][x]){ //set the color
         case EMPTY:
           ctx.fillStyle = LIGHT_GREY;
@@ -366,20 +373,19 @@ function drawBoard(){
           ctx.fillStyle = LIGHT_ORANGE;
           break;
         case FOOD:
-          ctx.fillStyle = LIGHT_GREY;
-          ctx.fillRect(x*spaceSize, y*spaceSize, 
-            spaceSize, spaceSize)
           ctx.drawImage(imgApple,x*spaceSize,y*spaceSize)
           doIt = false;
           break;
         case WALL:
-          ctx.fillStyle = BROWN;
+          ctx.drawImage(imgWall,x*spaceSize,y*spaceSize)
+          doIt = false;
           break;
         case ICE:
           ctx.fillStyle = LIGHT_BLUE;
           break;
         case PORTAL:
-          ctx.fillStyle = DARK_BLUE;
+          ctx.drawImage(imgPortal,x*spaceSize,y*spaceSize)
+          doIt = false;
           break;
         default:
           break;
