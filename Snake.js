@@ -276,6 +276,10 @@ function step(){
       nextHeadPosition[0]--;
       break;
   }
+  nextHeadPosition[2] = -direction;
+  nextHeadPosition[3] = 0;
+  Snake[Snake.length-1][3] = direction;
+
   Snake.push(nextHeadPosition);
 
   //offmap? (dead then)
@@ -296,7 +300,6 @@ function step(){
       document.getElementById("score").textContent = score;//update score display
       //delete the eaten food from the list (there can be multiple food at once)
       listFood.forEach((element, i) => {
-        console.log(element)
         if(element[0] == nextHeadPosition[0] && element[1] == nextHeadPosition[1]) index = i;
       });
       if (index > -1) {
@@ -313,7 +316,6 @@ function step(){
         dead = true;
       }
     }
-
   }
 
   //update the world
@@ -344,7 +346,6 @@ function newApple(){
   let random = Math.round(Math.random() * (+max - +min) + +min);
   //add it to the list
   let foodSpace = possibleSpace[random];
-  console.log([foodSpace[0], foodSpace[1], world[foodSpace[1]][foodSpace[0]] ])
   listFood.push([foodSpace[0], foodSpace[1], world[foodSpace[1]][foodSpace[0]] ]);//x, y, type of cell
 }
 
