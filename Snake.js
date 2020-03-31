@@ -59,6 +59,14 @@ var imgGrass = new Image();
 imgGrass.src = 'Images/Grass.png';
 var imgIce = new Image();
 imgIce.src = 'Images/Ice.png';
+var imgSnakeHead = new Image();
+var imgSnakeBody = new Image();
+var imgSnakeTurn = new Image();
+var imgSnakeEnd = new Image();
+imgSnakeHead.src = 'Images/Snake_Head.png';
+imgSnakeBody.src = 'Images/Snake_Body.png';
+imgSnakeTurn.src = 'Images/Snake_Turn.png';
+imgSnakeEnd.src = 'Images/Snake_End.png';
 
 //define some color (with the image, some of them might be unused)
 var BLACK = "#000000";
@@ -394,45 +402,39 @@ function drawBoard(){
     for(let x = 0; x<worldWidth; x++){ //for every cells in the line
       ctx.fillStyle = LIGHT_GREY;
       ctx.fillRect(x*spaceSize, y*spaceSize,
-        spaceSize, spaceSize)
+        spaceSize, spaceSize);
       switch(world[y][x]){ //set the color or draw the image
         case EMPTY:
-          ctx.fillStyle = LIGHT_GREY;
-          ctx.fillRect(x*spaceSize, y*spaceSize,
-            spaceSize, spaceSize)
+          //already done
           break;
         case SNAKE_BODY:
-          ctx.fillStyle = PINK;
-          ctx.fillRect(x*spaceSize, y*spaceSize,
-            spaceSize, spaceSize)
+          ctx.drawImage(imgSnakeBody,x*spaceSize,y*spaceSize);
           break;
         case SNAKE_HEAD:
-          ctx.fillStyle = LIGHT_ORANGE;
-          ctx.fillRect(x*spaceSize, y*spaceSize,
-            spaceSize, spaceSize)
+          ctx.drawImage(imgSnakeHead,x*spaceSize,y*spaceSize);
           break;
         case FOOD:
-          ctx.drawImage(imgApple,x*spaceSize,y*spaceSize)
+          ctx.drawImage(imgApple,x*spaceSize,y*spaceSize);
           break;
         case GRASS_FOOD:
-          ctx.drawImage(imgGrass,x*spaceSize-3,y*spaceSize-3)
-          ctx.drawImage(imgApple,x*spaceSize,y*spaceSize)
+          ctx.drawImage(imgGrass,x*spaceSize-3,y*spaceSize-3);
+          ctx.drawImage(imgApple,x*spaceSize,y*spaceSize);
           break;
         case ICE_FOOD:
-          ctx.drawImage(imgIce,x*spaceSize,y*spaceSize)
-          ctx.drawImage(imgApple,x*spaceSize,y*spaceSize)
+          ctx.drawImage(imgIce,x*spaceSize,y*spaceSize);
+          ctx.drawImage(imgApple,x*spaceSize,y*spaceSize);
           break;
         case WALL:
-          ctx.drawImage(imgWall,x*spaceSize,y*spaceSize)
+          ctx.drawImage(imgWall,x*spaceSize,y*spaceSize);
           break;
         case ICE:
-          ctx.drawImage(imgIce,x*spaceSize,y*spaceSize)
+          ctx.drawImage(imgIce,x*spaceSize,y*spaceSize);
           break;
         case PORTAL:
-          ctx.drawImage(imgPortal,x*spaceSize,y*spaceSize)
+          ctx.drawImage(imgPortal,x*spaceSize,y*spaceSize);
           break;
         case GRASS:
-          ctx.drawImage(imgGrass,x*spaceSize-3,y*spaceSize-3)
+          ctx.drawImage(imgGrass,x*spaceSize-3,y*spaceSize-3);
           break;
         default:
           break;
