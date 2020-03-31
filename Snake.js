@@ -6,11 +6,11 @@ var key; // last key key pressed by user
 var direction; //direction the snake is facing
 var score = 0; //user score
 
-//variables for direction
-var UP = 0;
-var RIGHT = 1;
-var DOWN = 2;
-var LEFT = 3;
+//variables for direction (opposed direction have opposed value)
+var UP = 1;
+var RIGHT = 2;
+var DOWN = -1;
+var LEFT = -2;
 var dead = false;//if the player is dead or alive
 var gameSpeed; //interval in ms for step()
 var loop; //value from setInterval(step)
@@ -464,14 +464,12 @@ function updateVariable(data){
   listIce = data.ice;
   listPortal = data.portal;
   listGrass = data.grass;
-  Snake = data.snake;
 
   listFood = [];
   for(let i = 0; i<data.food.length; i++){
     listFood.push([data.food[i][0], data.food[i][1], EMPTY])
   }
 
-  updateWorld();
   gameSpeed = data.delay;
   switch(data.startDirection){
     case "UP":
@@ -490,6 +488,12 @@ function updateVariable(data){
       console.log("Error data direction")
       break;
   }
+  Snake = [];
+  for(let i = 0; i<data.snake.length; i++){
+    listFood.push([data.snake[i][0], data.snake[i][1], -direction, direction])
+  }
+
+  updateWorld();
   newGame();
 }
 
