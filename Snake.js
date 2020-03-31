@@ -409,10 +409,12 @@ function drawBoard(){
         case EMPTY:
           //already done
           break;
+
         case SNAKE_BODY:
           for (let i = 0; i<Snake.length; i++){
             if (Snake[i][0] == x && Snake[i][1] == y){
-              if(i==0){//its the end of the snake
+              if(i==0 || Snake[i][2] == -Snake[i][3]){//its the end of the snake
+                //or same direction for coming and going so straight. degrees is the same
                 switch (Snake[i][3]) {
                   case -2:
                     degrees = 180;
@@ -429,7 +431,8 @@ function drawBoard(){
                   default:
                     break;
                 }
-                drawRotated(ctx, degrees , imgSnakeEnd, x*spaceSize, y*spaceSize);
+                if(i==0)drawRotated(ctx, degrees , imgSnakeEnd, x*spaceSize, y*spaceSize);
+                else drawRotated(ctx, degrees , imgSnakeBody, x*spaceSize, y*spaceSize)
               }
             }
           }
@@ -437,6 +440,7 @@ function drawBoard(){
           
 
           break;
+
         case SNAKE_HEAD:
           switch (Snake[Snake.length-1][3]) {
             case -2:
