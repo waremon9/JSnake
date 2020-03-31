@@ -277,7 +277,7 @@ function step(){
       break;
   }
   nextHeadPosition[2] = -direction;
-  nextHeadPosition[3] = 0;
+  nextHeadPosition[3] = direction;
   Snake[Snake.length-1][3] = direction;
 
   Snake.push(nextHeadPosition);
@@ -404,17 +404,57 @@ function drawBoard(){
       ctx.fillStyle = LIGHT_GREY;
       ctx.fillRect(x*spaceSize, y*spaceSize,
         spaceSize, spaceSize);
+      let degrees = 0;
       switch(world[y][x]){ //set the color or draw the image
         case EMPTY:
           //already done
           break;
         case SNAKE_BODY:
-          ctx.drawImage(imgSnakeBody,x*spaceSize,y*spaceSize);
+          for (let i = 0; i<Snake.length; i++){
+            if (Snake[i][0] == x && Snake[i][1] == y){
+              if(i==0){//its the end of the snake
+                switch (Snake[i][3]) {
+                  case -2:
+                    degrees = 180;
+                    break;
+                  case -1:
+                    degrees = 90;
+                    break;
+                  case 1:
+                    degrees = 270;
+                    break;
+                  case 1:
+                    degrees = 0;
+                    break;
+                  default:
+                    break;
+                }
+                drawRotated(ctx, degrees , imgSnakeEnd, x*spaceSize, y*spaceSize);
+              }
+            }
+          }
+
+          
+
           break;
         case SNAKE_HEAD:
-          
-          drawRotated(ctx, 270 , imgSnakeHead, x*spaceSize, y*spaceSize);
-
+          switch (Snake[Snake.length-1][3]) {
+            case -2:
+              degrees = 180;
+              break;
+            case -1:
+              degrees = 90;
+              break;
+            case 1:
+              degrees = 270;
+              break;
+            case 1:
+              degrees = 0;
+              break;
+            default:
+              break;
+          }
+          drawRotated(ctx, degrees , imgSnakeHead, x*spaceSize, y*spaceSize);
           break;
         case FOOD:
           ctx.drawImage(imgApple,x*spaceSize,y*spaceSize);
@@ -469,7 +509,9 @@ function drawRotated(context, degrees, image, x, y){
 
   //x and y need to be updated according to the rotated context
   switch (degrees) {
-    case 0: //do nothing
+    case 0: //do nothing newX;
+    newX = x;
+    newY = y;
       break;
     case 90:
       newX = y;
