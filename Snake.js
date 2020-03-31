@@ -411,7 +411,9 @@ function drawBoard(){
           ctx.drawImage(imgSnakeBody,x*spaceSize,y*spaceSize);
           break;
         case SNAKE_HEAD:
-          ctx.drawImage(imgSnakeHead,x*spaceSize,y*spaceSize);
+          
+          drawRotated(ctx, 270 , imgSnakeHead, x*spaceSize, y*spaceSize);
+
           break;
         case FOOD:
           ctx.drawImage(imgApple,x*spaceSize,y*spaceSize);
@@ -457,6 +459,47 @@ function drawBoard(){
 }
 
 
+function drawRotated(context, degrees, image, x, y){
+  // save the unrotated context of the canvas so we can restore it later
+  context.save();
+
+  let newX;
+  let newY;
+
+  //x and y need to be updated according to the rotated context
+  switch (degrees) {
+    case 0: //do nothing
+      break;
+    case 90:
+      newX = y;
+      newY = -1*x -50; //-50 correct the starting point for drawing
+      break;
+    case 180:
+      newX =x*-1 - 50;
+      newY =y*-1 - 50;
+      break;
+    case 270:
+      newX = -1*y -50;
+      newY = x;
+      break;
+    default:
+      console.log("bad angle");
+      break;
+  }
+
+
+  // rotate the canvas to the specified degrees
+  context.rotate(degrees*Math.PI/180);
+
+  // draw the image
+  // since the context is rotated, the image will be rotated also
+  context.drawImage(image,newX,newY);
+
+  // we’re done with the rotating so restore the unrotated context
+  context.restore();
+}
+
+
 function updateVariable(data){
   worldWidth = data.dimensions[0];
   worldHeight = data.dimensions[1];
@@ -490,7 +533,7 @@ function updateVariable(data){
   }
   Snake = [];
   for(let i = 0; i<data.snake.length; i++){
-    listFood.push([data.snake[i][0], data.snake[i][1], -direction, direction])
+    Snake.push([data.snake[i][0], data.snake[i][1], -direction, direction])
   }
 
   updateWorld();
