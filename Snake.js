@@ -643,23 +643,25 @@ function updateWorld(){
   }
 }
 
+
 function saveScore(score, levelNumber) {
-  let level = parseInt(levelNumber);
-  if (!scoreTab){//score tab is empty
-    scoreTab = [[score,level]];//array of array (one value now but more will probably come)
+  if (!scoreTab){//score tab doesn't exist, first score to save
+    scoreTab = [];
+    for(var i = 0; i<nbLevel; i++){
+      scoreTab.push([]);
+    }
+    scoreTab[levelNumber-1].push([score]);
   }else{
-    scoreTab.push([score,level]);
-    scoreTab.sort();//because it work
+    scoreTab[levelNumber-1].push([score]);
+    scoreTab[levelNumber-1].sort();//because it work
+    if(scoreTab[levelNumber-1].length>10) scoreTab[levelNumber-1].pop();
   }
   localStorage.setItem('ScoreTab', JSON.stringify(scoreTab));
 }
 
+
 function getScoreForLevel(levelNumber){
-  let scoreArray=[];
-  scoreTab.forEach(element => {
-    if(element[1]==levelNumber) scoreArray.push(element);
-  });
-  return scoreArray;
+  return scoreTab[levelNumber-1];
 }
 
 function clearScoreBoard(){
