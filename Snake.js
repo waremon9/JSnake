@@ -80,6 +80,8 @@ var DARK_BLUE = "#2000AA";
 var PINK = "#FE7E9C";
 var LIGHT_ORANGE = "#FFA356";
 
+//get saved data from local storage
+var scoreTab = JSON.parse(localStorage.getItem('ScoreTab'));
 
 // wait for window to load
 window.addEventListener("load", loadButton);
@@ -353,6 +355,12 @@ function newApple(){
 function gameOver(){
   //game-over screen
 
+  //save score
+  saveScore(score, selectedLevel);
+  scoreTab.forEach(element => {
+    console.log(element);
+  });
+
   //sound
   musicGame.pause();
   audioGameOver.play();
@@ -425,14 +433,39 @@ function drawBoard(){
                   case 1:
                     degrees = 270;
                     break;
-                  case 1:
+                  case 2:
                     degrees = 0;
                     break;
                   default:
                     break;
                 }
                 if(i==0)drawRotated(ctx, degrees , imgSnakeEnd, x*spaceSize, y*spaceSize);
-                else drawRotated(ctx, degrees , imgSnakeBody, x*spaceSize, y*spaceSize)
+                else drawRotated(ctx, degrees , imgSnakeBody, x*spaceSize, y*spaceSize);
+              }
+              else{//the part is turning so we check from where it come and where it go
+                let goTo = Snake[i][3];
+                let from = Snake[i][2];
+                switch (goTo){//where it go
+                  case -2:
+                    if(from == 1) degrees = 180;
+                    else degrees = 90;
+                    break;
+                  case -1:
+                    if(from == 2) degrees = 0;
+                    else degrees = 90;
+                    break;
+                  case 1:
+                    if(from == -2) degrees = 180;
+                    else degrees = 270;
+                    break;
+                  case 2:
+                    if(from == -1) degrees = 0;
+                    else degrees = 270;
+                    break;
+                  default:
+                    break;
+                }
+                drawRotated(ctx, degrees , imgSnakeTurn, x*spaceSize, y*spaceSize)
               }
             }
           }
@@ -608,4 +641,27 @@ function updateWorld(){
     }
     world.push(line);
   }
+}
+
+function saveScore(score, levelNumber) {
+  let level = parseInt(levelNumber);
+  if (!scoreTab){//score tab is empty
+    scoreTab = [[score,level]];//array of array (one value now but more will probably come)
+  }else{
+    scoreTab.push([score,level]);
+    scoreTab.sort();//because it work
+  }
+  localStorage.setItem('ScoreTab', JSON.stringify(scoreTab));
+}
+
+function getScoreForLevel(levelNumber){
+  let scoreArray=[];
+  scoreTab.forEach(element => {
+    if(element[1]==levelNumber) scoreArray.push(element);
+  });
+  return scoreArray;
+}
+
+function clearScoreBoard(){
+  localStorage.clear();
 }
