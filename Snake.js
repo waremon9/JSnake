@@ -1,6 +1,6 @@
 //Some usefull variable
 
-var nbLevel = 6; //The number of level for the combobox
+var nbLevel = 7; //The number of level for the combobox
 var selectedLevel; //keep in memory the selected level in case of restart
 var key; // last key key pressed by user
 var direction; //direction the snake is facing
@@ -68,7 +68,7 @@ imgSnakeBody.src = 'Images/Snake_Body.png';
 imgSnakeTurn.src = 'Images/Snake_Turn.png';
 imgSnakeEnd.src = 'Images/Snake_End.png';
 
-//define some color (with the image, some of them might be unused)
+//define some color (with the image, some of them might be unused (if not all))
 var BLACK = "#000000";
 var RED = "#FF0000";
 var GREEN = "#00FF00";
@@ -357,9 +357,6 @@ function gameOver(){
 
   //save score
   saveScore(score, selectedLevel);
-  scoreTab.forEach(element => {
-    console.log(element);
-  });
 
   //sound
   musicGame.pause();
@@ -419,6 +416,10 @@ function drawBoard(){
           break;
 
         case SNAKE_BODY:
+
+          //check for ice underneath the snake
+          if(listIce.some(e => e[0]==x && e[1]==y)) ctx.drawImage(imgIce,x*spaceSize,y*spaceSize);
+          
           for (let i = 0; i<Snake.length; i++){
             if (Snake[i][0] == x && Snake[i][1] == y){
               if(i==0 || Snake[i][2] == -Snake[i][3]){//its the end of the snake
@@ -469,12 +470,13 @@ function drawBoard(){
               }
             }
           }
-
-          
-
           break;
 
         case SNAKE_HEAD:
+
+          //check for ice underneath the snake
+          if(listIce.some(e => e[0]==x && e[1]==y)) ctx.drawImage(imgIce,x*spaceSize,y*spaceSize);
+          
           switch (Snake[Snake.length-1][3]) {
             case -2:
               degrees = 180;
@@ -616,6 +618,8 @@ function updateVariable(data){
     Snake.push([data.snake[i][0], data.snake[i][1], -direction, direction])
   }
 
+  console.log(listFood);
+  console.log(listGrass);
   updateWorld();
   newGame();
 }
