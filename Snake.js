@@ -592,8 +592,9 @@ function updateVariable(data){
 
   listFood = [];
   for(let i = 0; i<data.food.length; i++){
-    listFood.push([data.food[i][0], data.food[i][1], EMPTY])
-  }
+    if(data.food[i][2]) listFood.push([data.food[i][0], data.food[i][1], data.food[i][2]]);
+    else listFood.push([data.food[i][0], data.food[i][1], EMPTY]);
+  } 
 
   gameSpeed = data.delay;
   switch(data.startDirection){
@@ -617,9 +618,7 @@ function updateVariable(data){
   for(let i = 0; i<data.snake.length; i++){
     Snake.push([data.snake[i][0], data.snake[i][1], -direction, direction])
   }
-
-  console.log(listFood);
-  console.log(listGrass);
+  
   updateWorld();
   newGame();
 }
