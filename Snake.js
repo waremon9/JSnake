@@ -709,7 +709,6 @@ function updateWorld(){
   }
 }
 
-
 function saveScore(score, levelNumber) {
   if (!scoreTab){//score tab doesn't exist, first score to save
     scoreTab = [];

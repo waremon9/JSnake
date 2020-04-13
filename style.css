@@ -247,6 +247,7 @@ select{
 		font-size: 16px;
 		display: flex;
 		flex-wrap: wrap;
+		background-color: coral;
 }
 
 #slider ul li span{
@@ -269,37 +270,6 @@ select{
 	border-radius: 2rem;
 }
 
-#slider ul li:nth-child(1){
-	background-color: red;
-}
-
-#slider ul li:nth-child(2){
-	background-color: blue;
-}
-
-#slider ul li:nth-child(3){
-	background-color: yellow;
-}
-
-#slider ul li:nth-child(4){
-	background-color: green;
-}
-
-#slider ul li:nth-child(5){
-	background-color: coral;
-}
-
-#slider ul li:nth-child(6){
-	background-color: beige;
-}
-
-#slider ul li:nth-child(7){
-	background-color: purple;
-}
-
-#slider ul li:nth-child(8){
-	background-color: black;
-}
 
 #prev, #next{
 	width: 50px;
