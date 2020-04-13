@@ -121,8 +121,8 @@ function loadMenu(){
   let el2 = document.createElement("div");
   el2.setAttribute("id", "slider");
   let ul = "<ul id='sliderWrap'>"
-  for(var i = 0; i<nbLevel; i++){
-    ul += "<li></li>";
+  for(var i = 0; i<nbLevel+1; i++){
+    ul += "<li id='"+ i +"'></li>";
   }
   ul += "</ul>"
   let previous = "<a href='#' id='prev'>&#8810;</a>";
