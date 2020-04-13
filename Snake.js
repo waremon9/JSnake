@@ -124,7 +124,7 @@ function loadMenu(){
   el2.setAttribute("id", "slider");
   let ul = "<ul id='sliderWrap'>"
   for(var i = 0; i<nbLevel+1; i++){
-    ul += "<li><span id='" + i +"'></span></li>";
+    ul += "<li><span id='" + i +"'>Level "+i+"</span></li>";
   }
   ul += "</ul>";
   let previous = "<a href='#' id='prev'>&#8810;</a>";
@@ -153,6 +153,7 @@ function loadMenu(){
 }
 
 function loadScore(){
+  document.getElementById("0").textContent = "Best scores";
   for(let i=0;i < nbLevel+1;i++){
     for(let j=0; j < scoreTab[i].length; j++){
       let tag = document.createElement("p");
