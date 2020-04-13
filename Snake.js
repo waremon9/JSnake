@@ -108,6 +108,7 @@ function loadButton(){
     loadMenu();
     responsiveSlider();
     loadScore();
+    responsiveMenu();
   });
 }
 
@@ -449,6 +450,7 @@ function gameOver(){
       loadMenu();
       responsiveSlider();
       loadScore();
+      responsiveMenu();
     });
   document.getElementById("againBut")
     .addEventListener('click', startclicked);
@@ -790,8 +792,18 @@ var responsiveSlider = function(){
   prev.addEventListener("click", function(){
     prevSlide();
   });
-/*
+
   setInterval(function(){
     nextSlide();
-  }, 5000);*/
+  }, 10000);
+}
+
+var responsiveMenu = function(){
+  var menu = document.getElementById("js-Menu");
+  var menuWidth = menu.offsetWidth;
+  var menuHeight = menu.offsetHeight;
+  window.addEventListener('resize', function(){
+    menuWidth = menu.offsetWidth;
+    menuHeight = menu.offsetHeight;
+  });
 }
