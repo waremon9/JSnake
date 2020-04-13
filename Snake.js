@@ -84,6 +84,7 @@ var LIGHT_ORANGE = "#FFA356";
 
 //get saved data from local storage
 var scoreTab = JSON.parse(localStorage.getItem('ScoreTab'));
+var latestScoreTab = JSON.parse(localStorage.getItem('latestScoreTab'));
 
 // wait for window to load
 window.onload = function(){
@@ -109,7 +110,6 @@ function loadButton(){
     loadScore();
   });
 }
-
 
 function loadMenu(){
   //create the whole menu
@@ -153,7 +153,13 @@ function loadMenu(){
 }
 
 function loadScore(){
-  document.getElementById("0").textContent = "Best scores";
+  document.getElementById("0").textContent = "Latests scores";
+  for(let i=0;i<latestScoreTab.length;i++){
+    let tag = document.createElement("p");
+    let text = document.createTextNode(latestScoreTab[i]);
+    tag.appendChild(text);
+    document.getElementById(0).appendChild(tag);
+  }
   for(let i=0;i < nbLevel+1;i++){
     for(let j=0; j < scoreTab[i].length; j++){
       let tag = document.createElement("p");
@@ -162,11 +168,7 @@ function loadScore(){
       document.getElementById(i+1).appendChild(tag);
     };
   }
-  console.log(scoreTab[0].length);
-  console.log(""+scoreTab[0]);
 }
-
-
 
 //catch correct input
 document.addEventListener('keydown', function(event) {
@@ -710,6 +712,15 @@ function updateWorld(){
 }
 
 function saveScore(score, levelNumber) {
+  if(!latestScoreTab){
+    latestScoreTab = [];
+    latestScoreTab.push(score);
+  }
+  else {
+    latestScoreTab.push(score);
+    latestScoreTab.sort();
+    if(latestScoreTab.length>10) latestScoreTab.pop();
+  }
   if (!scoreTab){//score tab doesn't exist, first score to save
     scoreTab = [];
     for(var i = 0; i<nbLevel; i++){
@@ -722,6 +733,7 @@ function saveScore(score, levelNumber) {
     if(scoreTab[levelNumber-1].length>10) scoreTab[levelNumber-1].pop();
   }
   localStorage.setItem('ScoreTab', JSON.stringify(scoreTab));
+  localStorage.setItem('latestScoreTab', JSON.stringify(latestScoreTab));
 }
 
 
