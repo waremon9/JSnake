@@ -330,8 +330,6 @@ function step(){
   nextHeadPosition[3] = direction;
   Snake[Snake.length-1][3] = direction;
 
-  Snake.push(nextHeadPosition);
-
   //offmap? (dead then)
   if(world[0].length<=nextHeadPosition[0] || nextHeadPosition[0]<0
     || world.length<=nextHeadPosition[1] || nextHeadPosition[1]<0) dead = true;
@@ -364,11 +362,13 @@ function step(){
       //delete current butt
       var xy = Snake.shift();
     }
-    if(positionType==WALL || positionType==SNAKE_BODY){//then check for wall or body part
+
+    if(positionType==WALL || Snake.some(e => nextHeadPosition[0]==e[0] && nextHeadPosition[1]==e[1])){//then check for wall or body part
       if(!(nextHeadPosition[0]==xy[0] && nextHeadPosition[1]==xy[1])){//except for the very last part. it move at the same time so they don't collide
         dead = true;
       }
     }
+    Snake.push(nextHeadPosition);
   }
 
   //update the world
@@ -400,7 +400,8 @@ function newApple(){
 
   for(let y = 0; y<worldHeight; y++){
     for(let x = 0; x<worldWidth; x++){
-      if(world[y][x] == EMPTY || world[y][x] == ICE || world[y][x] == GRASS){
+      if(world[y][x] == EMPTY || world[y][x] == ICE
+        || (world[y][x] == GRASS && Snake.some(e => x==e[0] && y==e[1]))){
         possibleSpace.push([x,y]);
       }
     }
