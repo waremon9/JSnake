@@ -84,8 +84,9 @@ var LIGHT_ORANGE = "#FFA356";
 var scoreTab = JSON.parse(localStorage.getItem('ScoreTab'));
 
 // wait for window to load
-window.addEventListener("load", loadButton);
-
+window.onload = function(){
+  loadButton();
+}
 
 function loadButton(){
   //Creates the start button
@@ -99,7 +100,10 @@ function loadButton(){
   let button = "<a href='#' id='open'><span></span><span></span><span></span><span></span>Start playing</a>";
   el.innerHTML = button;
   document.getElementById("button").appendChild(el);
-  document.getElementById("open").addEventListener('click', loadMenu);
+  document.getElementById("open").addEventListener('click', function(){
+    loadMenu();
+    responsiveSlider();
+  });
 }
 
 
@@ -112,6 +116,17 @@ function loadMenu(){
   document.getElementById("menu").textContent = "";
 
   //add all button with eventListener
+  let el2 = document.createElement("div");
+  el2.setAttribute("id", "slider");
+  let ul = "<ul id='sliderWrap'>"
+  for(var i = 0; i<nbLevel; i++){
+    ul += "<li></li>";
+  }
+  ul += "</ul>"
+  let previous = "<a href='#' id='prev'>&#8810;</a>";
+  let nextup = "<a href='#' id='next'>&#8811;</a>"
+  el2.innerHTML = ul + previous + nextup;
+  document.getElementById("truc").appendChild(el2);
   let el = document.createElement("div");
   el.setAttribute("id", "js-Menu");
   let title = "<h1>Welcome to Snake!</h1>";
@@ -153,6 +168,10 @@ document.addEventListener('keydown', function(event) {
 
 function startclicked(){
   //get level number
+  let elmnt = document.getElementById("slider");
+  if (elmnt){
+      elmnt.remove();
+  }
   let levelNumber;
   if(document.querySelector('[name=comboLevels]')==null){
     levelNumber = selectedLevel;
@@ -419,7 +438,7 @@ function drawBoard(){
 
           //check for ice underneath the snake
           if(listIce.some(e => e[0]==x && e[1]==y)) ctx.drawImage(imgIce,x*spaceSize,y*spaceSize);
-          
+
           for (let i = 0; i<Snake.length; i++){
             if (Snake[i][0] == x && Snake[i][1] == y){
               if(i==0 || Snake[i][2] == -Snake[i][3]){//its the end of the snake
@@ -476,7 +495,7 @@ function drawBoard(){
 
           //check for ice underneath the snake
           if(listIce.some(e => e[0]==x && e[1]==y)) ctx.drawImage(imgIce,x*spaceSize,y*spaceSize);
-          
+
           switch (Snake[Snake.length-1][3]) {
             case -2:
               degrees = 180;
@@ -594,7 +613,7 @@ function updateVariable(data){
   for(let i = 0; i<data.food.length; i++){
     if(data.food[i][2]) listFood.push([data.food[i][0], data.food[i][1], data.food[i][2]]);
     else listFood.push([data.food[i][0], data.food[i][1], EMPTY]);
-  } 
+  }
 
   gameSpeed = data.delay;
   switch(data.startDirection){
@@ -618,7 +637,7 @@ function updateVariable(data){
   for(let i = 0; i<data.snake.length; i++){
     Snake.push([data.snake[i][0], data.snake[i][1], -direction, direction])
   }
-  
+
   updateWorld();
   newGame();
 }
@@ -669,4 +688,56 @@ function getScoreForLevel(levelNumber){
 
 function clearScoreBoard(){
   localStorage.clear();
+}
+
+//slider part
+var responsiveSlider = function(){
+  var slider = document.getElementById("slider");
+  var sliderWidth = slider.offsetWidth;
+  var slideList = document.getElementById("sliderWrap");
+  var count = 1;
+  var items = slideList.querySelectorAll("li").length;
+  var prev = document.getElementById("prev");
+  var next = document.getElementById("next");
+
+  window.addEventListener('resize', function(){
+    sliderWidth = slider.offsetWidth;
+  });
+
+  var prevSlide = function(){
+    if (count > 1){
+      count = count - 2;
+      slideList.style.left = "-" + count * sliderWidth + "px";
+      count++;
+    }
+    else if(count = 1){
+      count = items - 1;
+      slideList.style.left = "-" + count * sliderWidth + "px";
+      count++;
+    }
+  }
+
+  var nextSlide = function(){
+    if(count < items){
+      slideList.style.left = "-" + count * sliderWidth + "px";
+      count++
+    }
+    else if(count = items){
+      slideList.style.list = "0px";
+      count = 1;
+    }
+  };
+
+  next.addEventListener("click", function(){
+    nextSlide();
+  });
+
+  prev.addEventListener("click", function(){
+    prevSlide();
+  });
+
+  setInterval(function(){
+    nextSlide();
+  }, 5000);
+
 }
