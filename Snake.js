@@ -155,19 +155,25 @@ function loadMenu(){
 
 function loadScore(){
   document.getElementById("0").textContent = "Best scores";
-  for(let i=0;i<bestScoreTab.length;i++){
-    let tag = document.createElement("p");
-    let text = document.createTextNode(bestScoreTab[i]);
-    tag.appendChild(text);
-    document.getElementById(0).appendChild(tag);
+  if(bestScoreTab!=null){
+    for(let i=0;i<bestScoreTab.length;i++){
+      let tag = document.createElement("p");
+      let text = document.createTextNode(bestScoreTab[i]);
+      tag.appendChild(text);
+      document.getElementById(0).appendChild(tag);
+    }
   }
   for(let i=0;i < nbLevel+1;i++){
-    for(let j=0; j < scoreTab[i].length; j++){
-      let tag = document.createElement("p");
-      let text = document.createTextNode(scoreTab[i][j]);
-      tag.appendChild(text);
-      document.getElementById(i+1).appendChild(tag);
-    };
+    if(scoreTab!=null){
+      if(scoreTab[i]!=null){
+        for(let j=0; j < scoreTab[i].length; j++){
+          let tag = document.createElement("p");
+          let text = document.createTextNode(scoreTab[i][j]);
+          tag.appendChild(text);
+          document.getElementById(i+1).appendChild(tag);
+        }
+      }
+    }
   }
 }
 
