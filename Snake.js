@@ -87,6 +87,7 @@ var scoreTab = JSON.parse(localStorage.getItem('ScoreTab'));
 
 // wait for window to load
 window.onload = function(){
+  localStorage.clear();
   loadButton();
 }
 
@@ -105,6 +106,7 @@ function loadButton(){
   document.getElementById("open").addEventListener('click', function(){
     loadMenu();
     responsiveSlider();
+    loadScore();
   });
 }
 
@@ -122,9 +124,9 @@ function loadMenu(){
   el2.setAttribute("id", "slider");
   let ul = "<ul id='sliderWrap'>"
   for(var i = 0; i<nbLevel+1; i++){
-    ul += "<li id='"+ i +"'></li>";
+    ul += "<li><span id='" + i +"'></span></li>";
   }
-  ul += "</ul>"
+  ul += "</ul>";
   let previous = "<a href='#' id='prev'>&#8810;</a>";
   let nextup = "<a href='#' id='next'>&#8811;</a>"
   el2.innerHTML = ul + previous + nextup;
@@ -149,6 +151,20 @@ function loadMenu(){
   musicMenu.currentTime = 0;
   musicMenu.play();
 }
+
+function loadScore(){
+  for(let i=0;i < nbLevel+1;i++){
+    for(let j=0; j < scoreTab[i].length; j++){
+      let tag = document.createElement("p");
+      let text = document.createTextNode(scoreTab[i][j]);
+      tag.appendChild(text);
+      document.getElementById(i+1).appendChild(tag);
+    };
+  }
+  console.log(scoreTab[0].length);
+  console.log(""+scoreTab[0]);
+}
+
 
 
 //catch correct input
@@ -426,7 +442,11 @@ function gameOver(){
 
   //event listener
   document.getElementById("menuBut")
-    .addEventListener('click', loadMenu);
+    .addEventListener('click', function(){
+      loadMenu();
+      responsiveSlider();
+      loadScore();
+    });
   document.getElementById("againBut")
     .addEventListener('click', startclicked);
 }
@@ -758,9 +778,8 @@ var responsiveSlider = function(){
   prev.addEventListener("click", function(){
     prevSlide();
   });
-
+/*
   setInterval(function(){
     nextSlide();
-  }, 5000);
-
+  }, 5000);*/
 }
