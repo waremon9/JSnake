@@ -5,6 +5,8 @@ var selectedLevel; //keep in memory the selected level in case of restart
 var key; // last key key pressed by user
 var direction; //direction the snake is facing
 var score = 0; //user score
+var combo = 1.0;
+var multiTimer = 0;
 
 //variables for direction (opposed direction have opposed value)
 var UP = 1;
@@ -234,7 +236,7 @@ function newGame(){
   let height = world.length*spaceSize;
   let can =  "<canvas id='myCanvas' width='"+ width
     + "' height='"+ height +"'></canvas>";
-  let scoreAffichage = "<p id='score2'>Score: <span id='score'>0</span></p>";
+  let scoreAffichage = "<p id='score2'>Score: <span id='score'>0</span> <span id='multi'></span></p>";
   el.innerHTML = scoreAffichage + can;
   document.getElementById("game").appendChild(el);
   //Reset snake
@@ -243,6 +245,7 @@ function newGame(){
 
   drawBoard();
   loop = setInterval(playGame, gameSpeed);
+  comboLoop = setInterval(updateCombo, 100);
 }
 
 
@@ -254,7 +257,7 @@ function step(){
   //Set the new direction taken by the snake according to last key pressed
   //The snake cannot do 180° and will continue forward
   //it cannot change if on ice
-  if(positionType != ICE && positionType != PORTAL){
+  if(positionType != ICE && positionType != PORTAL && positionType != ICE_FOOD){
     switch(key){
       case UP:
         if(direction!=DOWN) direction = UP;
@@ -317,8 +320,11 @@ function step(){
       gameSpeed = Math.round(gameSpeed*0.975);
       clearInterval(loop);
       loop = setInterval(playGame, gameSpeed);
-      score+=10;
+      score+=Math.round(10*combo);
+      multiTimer = 500;
+      if(combo<2.9) combo = (combo*10 +2)/10; //max combo multi is x3 and not +=2 to avoid bug
       document.getElementById("score").textContent = score;//update score display
+      document.getElementById("multi").textContent = " x"+combo;
       //delete the eaten food from the list (there can be multiple food at once)
       listFood.forEach((element, i) => {
         if(element[0] == nextHeadPosition[0] && element[1] == nextHeadPosition[1]) index = i;
@@ -345,6 +351,19 @@ function step(){
   //draw the new state
   if(!dead) drawBoard();
   else gameOver();
+}
+
+
+function updateCombo(){
+  if(multiTimer<=0)
+  {
+    combo = 1.0;
+  }else{
+    multiTimer-=10;
+    let elem = document.getElementById("multi");
+    elem.style.opacity = multiTimer/250;
+  }
+
 }
 
 
@@ -376,6 +395,10 @@ function gameOver(){
 
   //save score
   saveScore(score, selectedLevel);
+
+  clearInterval(comboLoop);
+  combo = 1;
+  multiTimer = 0;
 
   //sound
   musicGame.pause();
